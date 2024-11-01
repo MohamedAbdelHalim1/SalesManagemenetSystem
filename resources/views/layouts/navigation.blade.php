@@ -29,7 +29,7 @@
                         {{ __('Users') }}
                     </x-nav-link>
                     @if (auth()->user()->role_id != 1)
-                    <x-nav-link :href="route('reports.index', ['id' => auth()->id()])" :active="request()->routeIs('reports.index')">
+                    <x-nav-link :href="route('reports.index', ['userId' => auth()->id()])" :active="request()->routeIs('reports.index')">
                         {{ __('Reports') }}
                     </x-nav-link>
                     @endif
