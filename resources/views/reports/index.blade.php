@@ -8,107 +8,89 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <button onclick="printReport()" class="bg-gray-500 text-white px-4 py-2 rounded mb-4" style="float: right;">
-                    Print Report
-                </button>
-                @foreach($openCloses as $openClose)
-                    <div class="mb-6">
-                        <h4 class="text-xl font-semibold">{{ $openClose->user->name }}'s Report Number ({{ $loop->iteration }})</h4>
-                        <p>Opened At: {{ $openClose->open_at }}</p>
-                        <p>Closed At: {{ $openClose->close_at }}</p>
+                <h3 class="text-2xl font-bold mb-4">User Reports</h3>
 
-                        <h5 class="mt-4 font-semibold">Transactions:</h5>
-                        @if($openClose->transactions->isEmpty())
-                            <p>No transactions available for this session.</p>
-                        @else
-                            <!-- DataTable for Transactions -->
-                            <table class="w-full border rounded mt-2 datatable">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="py-2 px-4">Reference Collection</th>
-                                        <th class="py-2 px-4">Sales Name</th>
-                                        <th class="py-2 px-4">Order Number</th>
-                                        <th class="py-2 px-4">Orders Delivered</th>
-                                        <th class="py-2 px-4">Total Cash</th>
-                                        <th class="py-2 px-4">Sales Commission</th>
-                                        <th class="py-2 px-4">Total Remaining</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($openClose->transactions as $transaction)
-                                        <tr class="border-t">
-                                            <td class="py-2 px-4 text-center">{{ $transaction->reference_collection }}</td>
-                                            <td class="py-2 px-4 text-center">{{ $transaction->user->name }}</td>
-                                            <td class="py-2 px-4 text-center">{{ $transaction->order_number }}</td>
-                                            <td class="py-2 px-4 text-center">{{ $transaction->order_delivered }}</td>
-                                            <td class="py-2 px-4 text-center">{{ $transaction->total_cash }}</td>
-                                            <td class="py-2 px-4 text-center">{{ $transaction->sales_commission }}</td>
-                                            <td class="py-2 px-4 text-center">{{ $transaction->total_remaining }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-
-                            <!-- Coins Table -->
-                            <h5 class="font-semibold mt-6 mb-4">Coins</h5>
-                            <table class="min-w-full bg-white coinsTable">
-                                <thead>
-                                    <tr>
-                                        <th class="py-2 px-4 border-b">0.5</th>
-                                        <th class="py-2 px-4 border-b">1</th>
-                                        <th class="py-2 px-4 border-b">10</th>
-                                        <th class="py-2 px-4 border-b">20</th>
-                                        <th class="py-2 px-4 border-b">50</th>
-                                        <th class="py-2 px-4 border-b">100</th>
-                                        <th class="py-2 px-4 border-b">200</th>
-                                        <th class="py-2 px-4 border-b">Money Shortage</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if($openClose->coin)
-                                        <tr>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_0_5 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_1 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_10 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_20 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_50 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_100 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_200 }}</td>
-                                            <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->money_shortage }}</td>
-                                        </tr>
-                                    @else
-                                        <tr>
-                                            <td colspan="8" class="py-2 px-4 border-b text-center">No coin data available.</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-
-                        @endif
+                <!-- Date Range Filter -->
+                <div class="flex gap-4 mb-4">
+                    <div>
+                        <label for="openDay" class="block font-semibold mb-1">Open Day</label>
+                        <input type="date" id="openDay" class="border rounded px-3 py-2">
                     </div>
-                    <hr style="margin: 15px;">
-                @endforeach
+                    <div>
+                        <label for="closeDay" class="block font-semibold mb-1">Close Day</label>
+                        <input type="date" id="closeDay" class="border rounded px-3 py-2">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button id="filterBtn" class="filter-btn text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
+                        <button id="resetBtn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Reset</button>
+                    </div>
+                </div>
+
+                <!-- User Reports Table -->
+                <table class="w-full border rounded" id="reportsTable">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-2 px-4">Report Number</th>
+                            <th class="py-2 px-4">Opened At</th>
+                            <th class="py-2 px-4">Closed At</th>
+                            <th class="py-2 px-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($openCloses as $openClose)
+                            <tr class="border-t report-row">
+                                <td class="py-2 px-4 text-center">{{ $loop->iteration }}</td>
+                                <td class="py-2 px-4 text-center open-date">{{ $openClose->open_at }}</td>
+                                <td class="py-2 px-4 text-center close-date">{{ $openClose->close_at ?? 'Open' }}</td>
+                                <td class="py-2 px-4 text-center">
+                                    <a href="{{ route('reports.show', $openClose->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                        Show
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- Include DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-
-    <!-- Include jQuery and DataTables JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
-    <!-- Initialize DataTables -->
+    <style>
+        .filter-btn{
+            background-color: rgb(172, 90, 250);
+        }
+    </style>
+    <!-- JavaScript to Filter by Date Range -->
     <script>
-        $(document).ready(function() {
-            $('.datatable').DataTable();
-            $('.coinsTable').DataTable(); // Initialize all tables with the class coinsTable
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            const openDay = document.getElementById('openDay').value;
+            const closeDay = document.getElementById('closeDay').value;
+            const rows = document.querySelectorAll('.report-row');
+
+            rows.forEach(row => {
+                const openDate = row.querySelector('.open-date').textContent.trim();
+                const closeDate = row.querySelector('.close-date').textContent.trim();
+                let showRow = true;
+
+                if (openDay && new Date(openDate) < new Date(openDay)) {
+                    showRow = false;
+                }
+
+                if (closeDay && closeDate !== 'Open' && new Date(closeDate) > new Date(closeDay)) {
+                    showRow = false;
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            });
         });
 
-        function printReport() {
-            window.print();
-        }
-
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            document.getElementById('openDay').value = '';
+            document.getElementById('closeDay').value = '';
+            const rows = document.querySelectorAll('.report-row');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+        });
     </script>
 </x-app-layout>

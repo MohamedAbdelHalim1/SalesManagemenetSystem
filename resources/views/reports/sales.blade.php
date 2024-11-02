@@ -36,9 +36,10 @@
                             <th class="py-2 px-4">Reference Collection</th>
                             <th class="py-2 px-4">Order Number</th>
                             <th class="py-2 px-4">Orders Delivered</th>
-                            <th class="py-2 px-4">Total Cash</th>
-                            <th class="py-2 px-4">Sales Commission</th>
                             <th class="py-2 px-4">Total Remaining</th>
+                            <th class="py-2 px-4">Sales Commission</th>
+                            <th class="py-2 px-4">Total Cash</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -48,9 +49,10 @@
                                 <td class="py-2 px-4 text-center">{{ $transaction->reference_collection }}</td>
                                 <td class="py-2 px-4 text-center">{{ $transaction->order_number }}</td>
                                 <td class="py-2 px-4 text-center">{{ $transaction->order_delivered }}</td>
-                                <td class="py-2 px-4 text-center">{{ $transaction->total_cash }}</td>
-                                <td class="py-2 px-4 text-center">{{ $transaction->sales_commission }}</td>
                                 <td class="py-2 px-4 text-center">{{ $transaction->total_remaining }}</td>
+                                <td class="py-2 px-4 text-center">{{ $transaction->sales_commission }}</td>
+                                <td class="py-2 px-4 text-center">{{ $transaction->total_cash }}</td>
+
                             </tr>
                         @endforeach
                     </tbody>

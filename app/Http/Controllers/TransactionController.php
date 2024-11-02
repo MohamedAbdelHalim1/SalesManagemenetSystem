@@ -53,14 +53,27 @@ class TransactionController extends Controller
     }
 
     public function show($id)
-    {
-        $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses'])->findOrFail($id);
-        $totalcashforclose = 0;
-        foreach ($openClose->transactions as $transaction) {
-            $totalcashforclose += $transaction->total_cash;
+{
+    $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses'])->findOrFail($id);
+    $totalcashforclose = 0;
+
+    // Calculate total cash from all transactions
+    foreach ($openClose->transactions as $transaction) {
+        $totalcashforclose += $transaction->total_cash;
+
+        // Subtract transfer values for this transaction
+        foreach ($transaction->transfers as $transfer) {
+            $totalcashforclose -= $transfer->transfer_value;
         }
-        return view('transactions.show', compact('openClose','totalcashforclose'));
+
+        // Subtract expense values for this transaction
+        foreach ($transaction->expenses as $expense) {
+            $totalcashforclose -= $expense->expenses_value;
+        }
     }
+
+    return view('transactions.show', compact('openClose', 'totalcashforclose'));
+}
 
 
     public function openTransaction()
@@ -136,7 +149,7 @@ class TransactionController extends Controller
             }
         }
     
-        return redirect()->route('transaction.index');
+        return redirect()->back();
         // Redirect to coin form to set currency values
        // return redirect()->route('transactions.coins', ['transaction_id' => $transaction->id]);
     }

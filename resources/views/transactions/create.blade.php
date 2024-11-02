@@ -17,7 +17,6 @@
                         <label for="user_search" class="block font-semibold mb-2">Search by User Name</label>
                         <div class="flex gap-2">
                             <input type="text" class="search-input w-full border rounded px-3 py-2" id="user_search_value" placeholder="Enter User Name">
-                            <button type="button" class="search text-white font-semibold px-4 py-2 rounded hover:bg-blue-700" id="user_search">Search</button>
                         </div>
                     </div>
 
@@ -246,9 +245,11 @@
 
 
         // Search User by Name
-        $('#user_search').on('click', function() {
-            const query = $("#user_search_value").val();
-            searchUser(query);
+        $('#user_search_value').on('keyup', function() {
+            const query = $(this).val();
+                if (query.length > 0) { 
+                    searchUser(query);
+                }
         });
 
         // AJAX Request for User Search

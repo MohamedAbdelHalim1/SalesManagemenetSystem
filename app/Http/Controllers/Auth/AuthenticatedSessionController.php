@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         if ($user->role_id != 1) {
             // Redirect to profile if role_id is not 1
-            return redirect()->route('profile.edit');
+            return redirect()->route('transaction.index');
         } else {
             // Redirect to dashboard if role_id is 1
             return redirect()->route('dashboard');

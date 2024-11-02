@@ -21,6 +21,16 @@ class ReportController extends Controller
         return view("reports.index", compact('openCloses'));
     }
 
+    public function show($id)
+    {
+        // Retrieve the open_close record with related transactions and coin by ID
+        $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses', 'coin'])
+            ->findOrFail($id);
+
+        return view('reports.show', compact('openClose'));
+    }
+
+
     public function accountingReport($userId)
     {
         $accountant = User::findOrFail($userId);
