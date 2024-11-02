@@ -18,7 +18,7 @@ class ReportController extends Controller
             ->with(['transactions','coin']) // Load the related transactions
             ->orderBy('created_at','desc')
             ->get();
-
+            
         return view("reports.index", compact('openCloses'));
     }
 

@@ -33,15 +33,39 @@
                             <th class="py-2 px-4">Report Number</th>
                             <th class="py-2 px-4">Opened At</th>
                             <th class="py-2 px-4">Closed At</th>
+                            <th class="py-2 px-4">Total Cash</th>
+                            <th class="py-2 px-4">Total Transfers</th>
+                            <th class="py-2 px-4">Total Expenses</th>
+
                             <th class="py-2 px-4">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($openCloses as $openClose)
+                            @php
+                                $total_transfer = 0;
+                                $total_expenses = 0;
+                                $total_cash = 0;
+                                foreach ($openClose->transactions as $transaction){
+                                    $total_cash += $transaction->total_cash;
+                                    foreach ($transaction->transfers as $transfer){
+                                        $total_transfer += $transfer->transfer_value;                               
+                                    }
+                                    foreach ($transaction->expenses as $expenses){
+                                        $total_expenses += $expenses->expenses_value;   
+
+                                    }
+                                }                                                           
+                            @endphp
+                            
                             <tr class="border-t report-row">
                                 <td class="py-2 px-4 text-center">{{ $loop->iteration }}</td>
                                 <td class="py-2 px-4 text-center open-date">{{ $openClose->open_at }}</td>
                                 <td class="py-2 px-4 text-center close-date">{{ $openClose->close_at ?? 'Open' }}</td>
+                                <td class="py-2 px-4 text-center open-date">{{ $total_cash }}</td>
+                                <td class="py-2 px-4 text-center open-date">{{ $total_transfer }}</td>
+                                <td class="py-2 px-4 text-center open-date">{{ $total_expenses }}</td>
+
                                 <td class="py-2 px-4 text-center">
                                     <a href="{{ route('reports.show', $openClose->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700">
                                         Show
