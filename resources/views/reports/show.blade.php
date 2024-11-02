@@ -125,6 +125,40 @@
                         </tr>
                     </tfoot>
                 </table>
+                <h5 class="font-semibold mt-6 mb-4">Coins</h5>
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">0.5</th>
+                            <th class="py-2 px-4 border-b">1</th>
+                            <th class="py-2 px-4 border-b">10</th>
+                            <th class="py-2 px-4 border-b">20</th>
+                            <th class="py-2 px-4 border-b">50</th>
+                            <th class="py-2 px-4 border-b">100</th>
+                            <th class="py-2 px-4 border-b">200</th>
+                            <th class="py-2 px-4 border-b">Money Shortage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if($openClose->coin)
+                            <tr>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_0_5 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_1 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_10 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_20 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_50 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_100 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_200 }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->money_shortage }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="8" class="py-2 px-4 border-b text-center">No currency added yet</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
 
                 <!-- Final Calculation -->
                 <div class="mt-8 text-right">

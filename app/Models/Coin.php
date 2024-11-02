@@ -15,7 +15,8 @@ class Coin extends Model
         'coin_50',
         'coin_100',
         'coin_200',
-        'open_close_id'
+        'open_close_id',
+        'money_shortage',
     ];
 
     public function open_close(){

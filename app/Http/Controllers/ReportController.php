@@ -16,6 +16,7 @@ class ReportController extends Controller
         // Retrieve all open_close records for the authenticated user
         $openCloses = OpenClose::where('user_id', $userId)
             ->with(['transactions','coin']) // Load the related transactions
+            ->orderBy('created_at','desc')
             ->get();
 
         return view("reports.index", compact('openCloses'));

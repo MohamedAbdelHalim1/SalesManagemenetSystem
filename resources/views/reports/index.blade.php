@@ -22,7 +22,7 @@
                     </div>
                     <div class="flex items-end gap-2">
                         <button id="filterBtn" class="filter-btn text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
-                        <button id="resetBtn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Reset</button>
+                        <button id="resetBtn" class="reset-btn bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Reset</button>
                     </div>
                 </div>
 
@@ -58,6 +58,10 @@
     <style>
         .filter-btn{
             background-color: rgb(172, 90, 250);
+        }
+        .filter-btn, .reset-btn{
+            width: 70px;
+            height: 40px;
         }
     </style>
     <!-- JavaScript to Filter by Date Range -->

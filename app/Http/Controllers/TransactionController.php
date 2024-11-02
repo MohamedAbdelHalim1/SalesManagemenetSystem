@@ -54,7 +54,7 @@ class TransactionController extends Controller
 
     public function show($id)
 {
-    $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses'])->findOrFail($id);
+    $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses','coin'])->findOrFail($id);
     $totalcashforclose = 0;
 
     // Calculate total cash from all transactions
