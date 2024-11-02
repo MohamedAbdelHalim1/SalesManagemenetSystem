@@ -149,7 +149,7 @@ class TransactionController extends Controller
             }
         }
     
-        return redirect()->back();
+        return redirect()->route('transaction.create');
         // Redirect to coin form to set currency values
        // return redirect()->route('transactions.coins', ['transaction_id' => $transaction->id]);
     }
