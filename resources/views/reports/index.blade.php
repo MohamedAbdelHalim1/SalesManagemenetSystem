@@ -62,6 +62,7 @@
         .filter-btn, .reset-btn{
             width: 70px;
             height: 40px;
+            margin-top: 15px;
         }
     </style>
     <!-- JavaScript to Filter by Date Range -->
