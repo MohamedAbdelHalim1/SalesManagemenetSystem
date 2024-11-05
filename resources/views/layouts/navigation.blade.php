@@ -5,9 +5,15 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
+                    @if (auth()->user()->role_id == 1)
                     <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
+                    @else
+                    <a href="{{ route('transaction.index') }}">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    </a>
+                    @endif
                 </div>
 
                 <!-- Navigation Links -->
@@ -22,17 +28,18 @@
                         {{ __('Transactions') }}
                     </x-nav-link>
                     @endif
+                    @if(auth()->user()->role_id == 1)
                     <x-nav-link :href="route('roles')" :active="request()->routeIs('roles')">
                         {{ __('Roles') }}
                     </x-nav-link>
                     <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
                         {{ __('Users') }}
                     </x-nav-link>
-                    @if (auth()->user()->role_id != 1)
+                    @endif
+
                     <x-nav-link :href="route('reports.index', ['userId' => auth()->id()])" :active="request()->routeIs('reports.index')">
                         {{ __('Reports') }}
                     </x-nav-link>
-                    @endif
                 </div>
             </div>
 

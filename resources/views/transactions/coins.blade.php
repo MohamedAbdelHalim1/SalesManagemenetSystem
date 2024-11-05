@@ -27,37 +27,39 @@
                                 </div>
                             </div>
                             
-
-                            <!-- Currency Inputs -->
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label>0.5 LE 
-                                        <input type="number" name="coin_0_5" class="form-input border rounded px-3" min="0" required />
-                                    </label>
-                                    <label>1 LE 
-                                        <input type="number" name="coin_1" class="form-input border rounded px-3" min="0" required />
-                                    </label>
-                                    <label>10 LE 
-                                        <input type="number" name="coin_10" class="form-input border rounded px-3" min="0" required />
-                                    </label>
-                                    <label>20 LE 
-                                        <input type="number" name="coin_20" class="form-input border rounded px-3" min="0" required />
-                                    </label>
-                                </div>
-                            </div>
                             <div class="row mt-3">
-                               <div class="col-md-4">
-                                    <label>50 LE 
-                                        <input type="number" name="coin_50" class="form-input border rounded px-3" min="0" required />
+                                <div class="col-md-4">
+                                    <label>200 LE 
+                                        <input type="number" name="coin_200" class="form-input border rounded px-3" min="0" required />
                                     </label>
                                     <label>100 LE 
                                         <input type="number" name="coin_100" class="form-input border rounded px-3" min="0" required />
                                     </label>
-                                    <label>200 LE 
-                                        <input type="number" name="coin_200" class="form-input border rounded px-3" min="0" required />
+                                     <label>50 LE 
+                                         <input type="number" name="coin_50" class="form-input border rounded px-3" min="0" required />
+                                     </label>
+                                </div>
+                             </div>
+
+                            <!-- Currency Inputs -->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>20 LE 
+                                        <input type="number" name="coin_20" class="form-input border rounded px-3" min="0" required />
                                     </label>
-                               </div>
+                                    <label>10 LE 
+                                        <input type="number" name="coin_10" class="form-input border rounded px-3" min="0" required />
+                                    </label>
+                                    <label>1 LE 
+                                        <input type="number" name="coin_1" class="form-input border rounded px-3" min="0" required />
+                                    </label>
+                                    <label>0.5 LE 
+                                        <input type="number" name="coin_0_5" class="form-input border rounded px-3" min="0" required />
+                                    </label>
+                                    
+                                </div>
                             </div>
+                            
 
                             <!-- Money Shortage Calculation -->
                             <div class="mt-4">
