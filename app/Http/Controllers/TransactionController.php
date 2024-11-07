@@ -154,6 +154,48 @@ class TransactionController extends Controller
        // return redirect()->route('transactions.coins', ['transaction_id' => $transaction->id]);
     }
 
+
+    public function edit($id)
+    {
+        $transaction = Transaction::with(['transfers', 'expenses'])->findOrFail($id);
+        return view('transactions.edit', compact('transaction'));
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $transaction->update($request->only([
+            'reference_collection', 'order_number', 'order_delivered', 'total_cash', 'sales_commission', 'total_remaining'
+        ]));
+
+        // Update Transfers and Expenses if provided
+        if (isset($request->transfer_keys) && isset($request->transfer_values)) {
+            $transaction->transfers()->delete();
+            for ($i = 0; $i < count($request->transfer_keys); $i++) {
+                Transfer::create([
+                    'transfer_key' => $request->transfer_keys[$i],
+                    'transfer_value' => $request->transfer_values[$i],
+                    'transaction_id' => $transaction->id,
+                ]);
+            }
+        }
+
+        if (isset($request->expense_keys) && isset($request->expense_values)) {
+            $transaction->expenses()->delete();
+            for ($i = 0; $i < count($request->expense_keys); $i++) {
+                Expenses::create([
+                    'expenses_key' => $request->expense_keys[$i],
+                    'expenses_value' => $request->expense_values[$i],
+                    'transaction_id' => $transaction->id,
+                ]);
+            }
+        }
+
+        return redirect()->route('transaction.index')->with('success', 'Transaction updated successfully');
+    }
+
+
     public function coins($open_close_id , $total_cash)
     {
         return view('transactions.coins', ['open_close_id' => $open_close_id , 'total_cash'=>$total_cash]);

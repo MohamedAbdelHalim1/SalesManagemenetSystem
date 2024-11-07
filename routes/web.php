@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/roles/{role}', [UserController::class, 'destroy_role'])->name('roles.destroy');
     Route::get('/transaction', [TransactionController::class, 'transaction'])->name('transaction.index');
     Route::get('/transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::get('/transactions/{id}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
+    Route::put('/transaction/{id}', [TransactionController::class, 'update'])->name('transactions.update');
     Route::get('/transactions/open', [TransactionController::class, 'openTransaction'])->name('open_transaction');
     Route::get('/transactions/cancel', [TransactionController::class, 'cancelTransaction'])->name('cancel_transaction');
     Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
@@ -39,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/{id}/show', [TransactionController::class, 'show'])->name('transactions.show');
     Route::get('/reports/{userId}', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/show/{id}', [ReportController::class, 'show'])->name('reports.show');
+    Route::post('/reports/{id}/reopen', [ReportController::class, 'reopen'])->name('reports.reopen');
 
     Route::get('/reports/sales/{userId}', [ReportController::class, 'salesReport'])->name('reports.sales');
 });

@@ -70,6 +70,12 @@
                                     <a href="{{ route('reports.show', $openClose->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700">
                                         Show
                                     </a>
+                                    @if(Auth::user()->role_id == 1 && $openClose->close_at !== null)
+                                        <!-- Reopen Button for Admins Only -->
+                                        <button onclick="confirmReopen({{ $openClose->id }})" class="bg-red-500 text-white px-3 py-1 rounded ml-2">
+                                            Reopen
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -121,5 +127,31 @@
                 row.style.display = '';
             });
         });
+
+
+        function confirmReopen(id) {
+            console.log(id);
+            
+        if (confirm('Are you sure you want to reopen?')) {
+            fetch(`/reports/${id}/reopen`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Reload the page or update the row to reflect the change
+                    location.reload();
+                } else {
+                    alert('Failed to reopen the report.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+
     </script>
 </x-app-layout>

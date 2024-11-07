@@ -47,4 +47,20 @@ class ReportController extends Controller
 
         return view('reports.sales', compact('salesUser', 'transactions'));
     }
+
+    public function reopen($id)
+    {
+        // Check if the authenticated user is an admin
+        if (Auth::user()->role_id != 1) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $openClose = OpenClose::findOrFail($id);
+        $openClose->close_at = null;
+        $openClose->save();
+
+        return response()->json(['success' => true]);
+    }
+
+
 }

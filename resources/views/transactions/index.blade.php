@@ -32,7 +32,13 @@
                                     <td class="py-2 px-4 border-b text-center">{{ $record->transactions->count() }}</td>
                                     <td class="py-2 px-4 border-b text-center">
                                         <a href="{{ route('transactions.show', $record->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded">Show Details</a>
-                                    </td>
+                                        @if(empty($record->close_at))
+                                        <!-- Button to Open Modal -->
+                                        <button onclick="openModal({{ $record->id }})" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">
+                                            Manage Transactions
+                                        </button>
+                                        @endif
+                                    </td>                                    
                                 </tr>
                             @endforeach
                         </tbody>
@@ -41,6 +47,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Background -->
+    <div id="modal-{{ $record->id }}" class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+        <!-- Modal Content -->
+        <div class="bg-white rounded-lg w-1/2 p-6">
+            <h2 class="text-xl font-semibold mb-4">Manage Transactions</h2>
+            <ul>
+                @foreach($record->transactions as $transaction)
+                    <li class="mb-2">
+                        <a href="{{ route('transactions.edit', $transaction->id) }}" class="text-blue-500 hover:underline">
+                            Edit Transaction #{{ $transaction->id }} - For {{ $transaction->user->name }} - at {{ $transaction->created_at->format('g:i A') }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+            <button onclick="closeModal({{ $record->id }})" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
+        </div>
+    </div>
+
 
         <!-- Include DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -54,5 +79,13 @@
         $(document).ready(function() {
             $('#transactionsTable').DataTable();
         });
+
+        function openModal(id) {
+            document.getElementById('modal-' + id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById('modal-' + id).classList.add('hidden');
+        }
     </script>
 </x-app-layout>
