@@ -66,13 +66,13 @@
                                 <td class="py-2 px-4 text-center open-date">{{ $total_transfer }}</td>
                                 <td class="py-2 px-4 text-center open-date">{{ $total_expenses }}</td>
 
-                                <td class="py-2 px-4 text-center">
-                                    <a href="{{ route('reports.show', $openClose->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                <td class="py-2 px-4 text-center" style="display: flex;">
+                                    <a href="{{ route('reports.show', $openClose->id) }}" class="btn-same-size bg-gray-500 text-white px-4  hover:bg-blue-700">
                                         Show
                                     </a>
                                     @if(Auth::user()->role_id == 1 && $openClose->close_at !== null)
                                         <!-- Reopen Button for Admins Only -->
-                                        <button onclick="confirmReopen({{ $openClose->id }})" class="bg-gray-500 text-white px-3 py-1 rounded ml-2">
+                                        <button onclick="confirmReopen({{ $openClose->id }})" class="btn-same-size bg-gray-500 text-white ml-2">
                                             Reopen
                                         </button>
                                     @endif
@@ -94,6 +94,23 @@
             height: 40px;
             margin-top: 15px;
         }
+        .btn-same-size {
+            width: 65px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #6b7280; /* Gray color */
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    
+        .btn-same-size:hover {
+            background-color: #4b5563; /* Slightly darker gray on hover */
+        }
+    
     </style>
     <!-- JavaScript to Filter by Date Range -->
     <script>

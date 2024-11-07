@@ -6,13 +6,11 @@
     </x-slot>
 
     <div class="py-12">
-
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-end mb-4">
                         <a href="{{ route('transaction.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Create Transaction</a>
-
                     </div>
 
                     <table id="transactionsTable" class="min-w-full bg-white">
@@ -30,13 +28,12 @@
                                     <td class="py-2 px-4 border-b text-center">{{ $record->open_at }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->close_at ?? 'Open' }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->transactions->count() }}</td>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        <a href="{{ route('transactions.show', $record->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded">Show Details</a>
+                                    <td class="py-2 px-4 border-b text-center" style="display: flex;">
+                                        <a href="{{ route('transactions.show', $record->id) }}" class="btn-same-size">Show Details</a>
                                         @if(empty($record->close_at))
-                                        <!-- Button to Open Modal -->
-                                        <button onclick="openModal({{ $record->id }})" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">
-                                            Manage Transactions
-                                        </button>
+                                            <button onclick="openModal({{ $record->id }})" class="btn-same-size ml-2">
+                                                Manage Transactions
+                                            </button>
                                         @endif
                                     </td>                                    
                                 </tr>
@@ -48,44 +45,72 @@
         </div>
     </div>
 
-    <!-- Modal Background -->
-    <div id="modal-{{ $record->id }}" class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+    <!-- Modal Structure -->
+    <div id="transactionModal" class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
         <!-- Modal Content -->
         <div class="bg-white rounded-lg w-1/2 p-6">
             <h2 class="text-xl font-semibold mb-4">Manage Transactions</h2>
-            <ul>
-                @foreach($record->transactions as $transaction)
-                    <li class="mb-2">
-                        <a href="{{ route('transactions.edit', $transaction->id) }}" class="text-blue-500 hover:underline">
-                            Edit Transaction #{{ $transaction->id }} - For {{ $transaction->user->name }} - at {{ $transaction->created_at->format('g:i A') }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-            <button onclick="closeModal({{ $record->id }})" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
+            <ul id="transactionList"></ul>
+            <button onclick="closeModal()" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">Close</button>
         </div>
     </div>
 
+    <style>
+        .btn-same-size {
+            width: 120px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #6b7280; /* Gray color */
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    
+        .btn-same-size:hover {
+            background-color: #4b5563; /* Slightly darker gray on hover */
+        }
+    </style>
 
-        <!-- Include DataTables CSS -->
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <!-- Include DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-        <!-- Include jQuery and DataTables JS -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <!-- Include jQuery and DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script>
-        // Initialize DataTable
         $(document).ready(function() {
             $('#transactionsTable').DataTable();
         });
 
-        function openModal(id) {
-            document.getElementById('modal-' + id).classList.remove('hidden');
+        function openModal(recordId) {
+            // Fetch transaction data for the record
+            fetch(`/api/transactions/${recordId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Populate the modal with transaction data
+                    const transactionList = document.getElementById('transactionList');
+                    transactionList.innerHTML = ''; // Clear previous content
+                    data.transactions.forEach(transaction => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('mb-2');
+                        listItem.innerHTML = `<a href="/transactions/${transaction.id}/edit" class="text-blue-500 hover:underline">
+                                                Edit Transaction #${transaction.id} - For ${transaction.user.name} - at ${new Date(transaction.created_at).toLocaleTimeString()}
+                                              </a>`;
+                        transactionList.appendChild(listItem);
+                    });
+
+                    // Show the modal
+                    document.getElementById('transactionModal').classList.remove('hidden');
+                })
+                .catch(error => console.error('Error:', error));
         }
 
-        function closeModal(id) {
-            document.getElementById('modal-' + id).classList.add('hidden');
+        function closeModal() {
+            document.getElementById('transactionModal').classList.add('hidden');
         }
     </script>
 </x-app-layout>

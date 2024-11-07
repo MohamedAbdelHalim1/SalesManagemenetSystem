@@ -196,6 +196,13 @@ class TransactionController extends Controller
     }
 
 
+    public function getTransactionsByRecord($recordId)
+    {
+        $record = OpenClose::with('transactions.user')->findOrFail($recordId);
+        return response()->json(['transactions' => $record->transactions]);
+    }
+
+
     public function coins($open_close_id , $total_cash)
     {
         return view('transactions.coins', ['open_close_id' => $open_close_id , 'total_cash'=>$total_cash]);
