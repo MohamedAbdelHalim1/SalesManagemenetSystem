@@ -34,7 +34,7 @@
                                         <a href="{{ route('transactions.show', $record->id) }}" class="bg-gray-500 text-white px-4 py-2 rounded">Show Details</a>
                                         @if(empty($record->close_at))
                                         <!-- Button to Open Modal -->
-                                        <button onclick="openModal({{ $record->id }})" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">
+                                        <button onclick="openModal({{ $record->id }})" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">
                                             Manage Transactions
                                         </button>
                                         @endif

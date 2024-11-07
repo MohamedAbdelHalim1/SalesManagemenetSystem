@@ -60,7 +60,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        <button type="button" class="add-transfer-btn bg-blue-500 text-white font-semibold px-2 rounded hover:bg-blue-700">+ Add Transfer</button>
+                        <button type="button" class="add-transfer-btn bg-gray-500 text-white font-semibold px-2 rounded hover:bg-blue-700">+ Add Transfer</button>
                     </div>
 
                     <!-- Expenses Section -->
@@ -76,12 +76,12 @@
                                 </div>
                             @endforeach
                         </div>
-                        <button type="button" class="add-expense-btn bg-blue-500 text-white font-semibold px-2 rounded hover:bg-blue-700">+ Add Expense</button>
+                        <button type="button" class="add-expense-btn bg-gray-500 text-white font-semibold px-2 rounded hover:bg-blue-700">+ Add Expense</button>
                     </div>
 
                     <!-- Cash Equivalent Display -->
                     <div class="flex justify-between items-center mb-6">
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
+                        <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded">Save Changes</button>
                         <div class="text-right">
                             <h2 class="text-lg font-semibold">Your cash should equal</h2>
                             <input type="number" id="cash_equivalent" class="form-input border rounded px-3 mt-2 text-center" style="width:150px;" readonly>

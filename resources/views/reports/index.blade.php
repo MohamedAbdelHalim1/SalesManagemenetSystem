@@ -72,7 +72,7 @@
                                     </a>
                                     @if(Auth::user()->role_id == 1 && $openClose->close_at !== null)
                                         <!-- Reopen Button for Admins Only -->
-                                        <button onclick="confirmReopen({{ $openClose->id }})" class="bg-red-500 text-white px-3 py-1 rounded ml-2">
+                                        <button onclick="confirmReopen({{ $openClose->id }})" class="bg-gray-500 text-white px-3 py-1 rounded ml-2">
                                             Reopen
                                         </button>
                                     @endif
