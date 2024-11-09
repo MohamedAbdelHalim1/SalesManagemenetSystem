@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form action="{{ route('transactions.update', $transaction->id) }}" method="POST">
+                <form action="{{ route('transactions.update', $transaction->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -51,17 +51,44 @@
                     <div class="mb-4" style="border-bottom:1px solid #ddd; padding:15px;">
                         <label for="transfers" class="block font-semibold mb-2">Transfers</label>
                         <div id="transfer_fields">
+                            <!-- Existing Transfers -->
                             @foreach($transaction->transfers as $transfer)
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:45%;" name="transfer_keys[]" value="{{ $transfer->transfer_key }}">
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <!-- Hidden Transfer ID -->
+                                    <input type="hidden" name="transfer_ids[]" value="{{ $transfer->id }}">
+
+                                    <!-- Transfer Key Input -->
+                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:20%;" name="transfer_keys[{{ $transfer->id }}]" value="{{ $transfer->transfer_key }}">
+                                    
+                                    <!-- Divider -->
                                     <span>-</span>
-                                    <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:45%;" name="transfer_values[]" value="{{ $transfer->transfer_value }}">
+
+                                    <!-- Transfer Value Input -->
+                                    <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:15%;" name="transfer_values[{{ $transfer->id }}]" value="{{ $transfer->transfer_value }}">
+
+                                    <!-- Image Preview and Upload -->
+                                    <div class="flex items-center space-x-2">
+                                        @if($transfer->image)
+                                            <a href="{{ asset($transfer->image) }}" target="_blank">
+                                                <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-16 h-16 object-cover">
+                                            </a>
+                                        @else
+                                            <span>No image attached</span>
+                                        @endif
+                                        <input type="file" class="form-input border rounded px-3 ml-2" name="transfer_images[{{ $transfer->id }}]">
+                                    </div>
+
+                                    <!-- Remove Button -->
                                     <button type="button" class="bg-gray-500 remove-transfer-btn text-red-500 font-semibold px-2 rounded">-</button>
                                 </div>
                             @endforeach
                         </div>
+
+                        <!-- Button to Add New Transfer -->
                         <button type="button" class="add-transfer-btn bg-gray-500 text-white font-semibold px-2 rounded hover:bg-blue-700">+ Add Transfer</button>
                     </div>
+
+
 
                     <!-- Expenses Section -->
                     <div class="mb-4" style="border-bottom:1px solid #ddd; padding:15px;">
@@ -124,15 +151,16 @@
             // Add Transfer Row
             $('.add-transfer-btn').on('click', function() {
                 const transferHtml = `
-                    <div class="flex items-center space-x-2 mb-2">
-                        <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:45%;" name="transfer_keys[]">
+                    <div class="flex items-center space-x-2 mb-2 new-transfer">
+                        <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:20%;" name="new_transfer_keys[]">
                         <span>-</span>
-                        <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:45%;" name="transfer_values[]">
+                        <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:15%;" name="new_transfer_values[]">
+                        <input type="file" class="form-input border rounded px-3" style="width:35%;" name="new_transfer_images[]">
                         <button type="button" class="bg-gray-500 remove-transfer-btn text-red-500 font-semibold px-2 rounded">-</button>
                     </div>`;
                 $('#transfer_fields').append(transferHtml);
-                calculateRemainingAndCashEquivalent(); // Recalculate after adding
             });
+
 
             // Remove Transfer Row
             $('#transfer_fields').on('click', '.remove-transfer-btn', function() {

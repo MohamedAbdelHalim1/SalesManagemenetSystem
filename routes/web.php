@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions/{open_close_id}/coins', [TransactionController::class, 'storeCoins'])->name('transactions.storeCoins');
     Route::post('/transactions/close-day/{open_close_id}', [TransactionController::class, 'closeDay'])->name('transactions.closeDay');
     Route::get('/transactions/{id}/show', [TransactionController::class, 'show'])->name('transactions.show');
+    Route::get('/expenses/create', [TransactionController::class, 'createExpenses'])->name('expenses.create');
+
     Route::get('/reports/{userId}', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/show/{id}', [ReportController::class, 'show'])->name('reports.show');
     Route::post('/reports/{id}/reopen', [ReportController::class, 'reopen'])->name('reports.reopen');

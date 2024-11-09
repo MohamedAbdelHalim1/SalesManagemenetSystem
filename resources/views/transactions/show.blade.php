@@ -75,6 +75,7 @@
                             <th class="py-2 px-4 border-b">Transaction ID</th>
                             <th class="py-2 px-4 border-b">Transfer Key</th>
                             <th class="py-2 px-4 border-b">Transfer Value</th>
+                            <th class="py-2 px-4 border-b">Transfer Image</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,20 +87,30 @@
                                     <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_key }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_value }}</td>
+                                    <td class="py-2 px-4 border-b text-center">
+                                        @if($transfer->image)
+                                            <a href="{{ asset($transfer->image) }}" target="_blank">
+                                                <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-20 h-20 object-cover" />
+                                            </a>
+                                        @else
+                                            <span>No image attached</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Transfer Value:</td>
+                            <td colspan="3" class="py-2 px-4 text-right font-bold">Total Transfer Value:</td>
                             <td class="py-2 px-4 text-center font-bold">{{ $totalTransferValueSum }}</td>
                         </tr>
                     </tfoot>
                 </table>
 
+
                 <!-- Expenses Table -->
-                <h5 class="font-semibold mt-6 mb-4">Expenses</h5>
+                <h5 class="font-semibold mt-6 mb-4">General Expenses</h5>
                 <table id="expensesTable" class="min-w-full bg-white">
                     <thead>
                         <tr>
@@ -110,15 +121,13 @@
                     </thead>
                     <tbody>
                         @php $totalExpenseValueSum = 0; @endphp
-                        @foreach($openClose->transactions as $transaction)
-                            @foreach($transaction->expenses as $expense)
-                                @php $totalExpenseValueSum += $expense->expenses_value; @endphp
-                                <tr>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_key }}</td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_value }}</td>
-                                </tr>
-                            @endforeach
+                        @foreach($generalExpenses as $expense)
+                            @php $totalExpenseValueSum += $expense->expenses_value; @endphp
+                            <tr>
+                                <td class="py-2 px-4 border-b text-center">{{ $expense->transaction_id }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_key }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_value }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
@@ -128,6 +137,36 @@
                         </tr>
                     </tfoot>
                 </table>
+
+                <!-- My Expenses Table -->
+                <h5 class="font-semibold mt-6 mb-4">My Expenses</h5>
+                <table id="myExpensesTable" class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">Transaction ID</th>
+                            <th class="py-2 px-4 border-b">Expense Key</th>
+                            <th class="py-2 px-4 border-b">Expense Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php $totalMyExpenseValueSum = 0; @endphp
+                        @foreach($accountingExpenses as $expense)
+                            @php $totalMyExpenseValueSum += $expense->expenses_value; @endphp
+                            <tr>
+                                <td class="py-2 px-4 border-b text-center">{{ $expense->transaction_id }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_key }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_value }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total My Expenses:</td>
+                            <td class="py-2 px-4 text-center font-bold">{{ $totalMyExpenseValueSum }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
 
         <!-- Coins Table -->
         <h5 class="font-semibold mt-6 mb-4">Coins</h5>

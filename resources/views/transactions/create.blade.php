@@ -63,7 +63,7 @@
                     </div>
 
                     <!-- Form for Transaction Creation -->
-                    <form id="transactionForm" action="{{ route('transactions.store') }}" method="POST" class="hidden mt-6">
+                    <form id="transactionForm" action="{{ route('transactions.store') }}" method="POST" class="hidden mt-6" enctype="multipart/form-data">
                         @csrf
                         <!-- Hidden input to store the selected user_id -->
                         <input type="hidden" id="user_id" name="user_id">
@@ -94,12 +94,13 @@
                             <label for="transfers" class="block font-semibold mb-2">Any Transfers...?</label>
                             <div id="transfer_fields">
                                 <div class="flex items-center space-x-2 mb-2">
-                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:45%;" name="transfer_keys[]">
+                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]">
                                     <span>-</span>
-                                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:45%;" name="transfer_values[]">
+                                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]">
+                                    <input type="file" class="form-input border rounded px-3" style="width:35%;" name="transfer_images[]">
                                     <button type="button" class="add-transfer-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
                                 </div>
-                            </div>
+                            </div>                            
                         </div>
 
 
@@ -209,9 +210,10 @@
         $('#transfer_fields').on('click', '.add-transfer-btn', function() {
             const transferHtml = `
                 <div class="flex items-center space-x-2 mb-2">
-                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:45%;" name="transfer_keys[]">
+                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]">
                     <span>-</span>
-                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:45%;" name="transfer_values[]">
+                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]">
+                    <input type="file" class="form-input border rounded px-3" style="width:35%;" style="width:35%;" name="transfer_images[]">
                     <button type="button" class="add-transfer-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
                 </div>`;
             $('#transfer_fields').append(transferHtml);

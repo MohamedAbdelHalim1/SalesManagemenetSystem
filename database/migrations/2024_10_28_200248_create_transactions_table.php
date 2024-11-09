@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('reference_collection');
-            $table->string('order_number');
-            $table->string('order_delivered');
-            $table->decimal('total_cash', 10, 2); 
-            $table->decimal('sales_commission', 10, 2); 
-            $table->decimal('total_remaining', 10, 2); 
+            $table->string('reference_collection')->nullable();
+            $table->string('order_number')->nullable();
+            $table->string('order_delivered')->nullable();
+            $table->decimal('total_cash', 10, 2)->nullable(); 
+            $table->decimal('sales_commission', 10, 2)->nullable(); 
+            $table->decimal('total_remaining', 10, 2)->nullable(); 
             $table->unsignedBigInteger('user_id'); //sales id
             $table->unsignedBigInteger('open_close_id'); //accounting id who open and close day
             $table->timestamps();

@@ -11,6 +11,7 @@ class Transfer extends Model
         'transfer_key',
         'transfer_value',
         'transaction_id',
+        'image',
     ];
 
     public function transaction(){
