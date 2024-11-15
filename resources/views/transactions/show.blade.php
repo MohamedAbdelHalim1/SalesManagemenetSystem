@@ -110,7 +110,7 @@
 
 
                 <!-- Expenses Table -->
-                <h5 class="font-semibold mt-6 mb-4">General Expenses</h5>
+                <h5 class="font-semibold mt-6 mb-4">Sales Expenses</h5>
                 <table id="expensesTable" class="min-w-full bg-white">
                     <thead>
                         <tr>
@@ -132,15 +132,15 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Expense Value:</td>
+                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Sales Expense Value:</td>
                             <td class="py-2 px-4 text-center font-bold">{{ $totalExpenseValueSum }}</td>
                         </tr>
                     </tfoot>
                 </table>
 
                 <!-- My Expenses Table -->
-                <h5 class="font-semibold mt-6 mb-4">My Expenses</h5>
-                <table id="myExpensesTable" class="min-w-full bg-white">
+                <h5 class="font-semibold mt-6 mb-4">Accountant Expenses</h5>
+                <table id="myExpensesTable" class="min-w-full bg-white" style="width: 100%;">
                     <thead>
                         <tr>
                             <th class="py-2 px-4 border-b">Transaction ID</th>
@@ -161,7 +161,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total My Expenses:</td>
+                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Accountant Expenses:</td>
                             <td class="py-2 px-4 text-center font-bold">{{ $totalMyExpenseValueSum }}</td>
                         </tr>
                     </tfoot>
@@ -170,7 +170,7 @@
 
         <!-- Coins Table -->
         <h5 class="font-semibold mt-6 mb-4">Coins</h5>
-        <table class="min-w-full bg-white">
+        <table class="min-w-full bg-white" style="width: 100%;">
             <thead>
                 <tr>
                     <th class="py-2 px-4 border-b">0.5</th>
@@ -202,14 +202,14 @@
                     </tr>
                 @endif
             </tbody>
-        </table>
+        </table><br><br>
 
 
 
                 <!-- Final Calculation -->
-                <div class="mt-8 text-right">
+                <div class="mt-8 text-right" style="float: right;">
                     <h4 class="font-semibold text-xl">Final Cash Calculation:</h4>
-                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum) }}</p>
+                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum) }} LE</p>
                 </div>
             </div>
         </div>
