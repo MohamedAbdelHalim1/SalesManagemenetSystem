@@ -219,80 +219,123 @@ class TransactionController extends Controller
 
 
     public function update(Request $request, $id)
-{
-    $transaction = Transaction::findOrFail($id);
-    $data = $request->all();
-
-    // Update the transaction details
-    $transaction->update([
-        'reference_collection' => $data['reference_collection'],
-        'order_number' => $data['order_number'],
-        'order_delivered' => $data['order_delivered'],
-        'total_cash' => $data['total_cash'],
-        'sales_commission' => $data['sales_commission'],
-        'total_remaining' => $data['total_remaining'],
-    ]);
-
-    // Update existing Transfers
-    if (isset($data['transfer_ids'])) {
-        foreach ($data['transfer_ids'] as $transferId) {
-            $transfer = Transfer::find($transferId);
-            if ($transfer) {
-                $transfer->transfer_key = $data['transfer_keys'][$transferId];
-                $transfer->transfer_value = $data['transfer_values'][$transferId];
-
-                // Check if a new image is uploaded
-                if ($request->hasFile("transfer_images.$transferId")) {
-                    $file = $request->file("transfer_images.$transferId");
+    {
+        $transaction = Transaction::findOrFail($id);
+        $data = $request->all();
+    
+        // Update the transaction details
+        $transaction->update([
+            'reference_collection' => $data['reference_collection'],
+            'order_number' => $data['order_number'],
+            'order_delivered' => $data['order_delivered'],
+            'total_cash' => $data['total_cash'],
+            'sales_commission' => $data['sales_commission'],
+            'total_remaining' => $data['total_remaining'],
+        ]);
+    
+        // Update existing Transfers
+        if (isset($data['transfer_ids'])) {
+            foreach ($data['transfer_ids'] as $transferId) {
+                $transfer = Transfer::find($transferId);
+                if ($transfer) {
+                    $transfer->transfer_key = $data['transfer_keys'][$transferId];
+                    $transfer->transfer_value = $data['transfer_values'][$transferId];
+    
+                    // Check if a new image is uploaded
+                    if ($request->hasFile("transfer_images.$transferId")) {
+                        $file = $request->file("transfer_images.$transferId");
+                        $fileName = time() . '_' . $file->getClientOriginalName();
+                        $destinationPath = public_path('transfer');
+    
+                        // Ensure the directory exists
+                        if (!file_exists($destinationPath)) {
+                            mkdir($destinationPath, 0755, true);
+                        }
+    
+                        // Save the new file and delete the old one if it exists
+                        $file->move($destinationPath, $fileName);
+                        if ($transfer->image && file_exists(public_path($transfer->image))) {
+                            unlink(public_path($transfer->image));
+                        }
+    
+                        $transfer->image = 'transfer/' . $fileName;
+                    }
+                    $transfer->save();
+                }
+            }
+        }
+    
+        // Add new Transfers
+        if (isset($data['new_transfer_keys']) && isset($data['new_transfer_values'])) {
+            for ($i = 0; $i < count($data['new_transfer_keys']); $i++) {
+                $newTransfer = new Transfer();
+                $newTransfer->transaction_id = $transaction->id;
+                $newTransfer->transfer_key = $data['new_transfer_keys'][$i];
+                $newTransfer->transfer_value = $data['new_transfer_values'][$i];
+    
+                // Check if an image is uploaded
+                if ($request->hasFile("new_transfer_images.$i")) {
+                    $file = $request->file("new_transfer_images.$i");
                     $fileName = time() . '_' . $file->getClientOriginalName();
                     $destinationPath = public_path('transfer');
-
-                    // Ensure the directory exists
+    
                     if (!file_exists($destinationPath)) {
                         mkdir($destinationPath, 0755, true);
                     }
-
-                    // Save the new file and delete the old one if it exists
+    
                     $file->move($destinationPath, $fileName);
+                    $newTransfer->image = 'transfer/' . $fileName;
+                }
+                $newTransfer->save();
+            }
+        }
+    
+        // Delete Transfers
+        if ($request->filled('deleted_transfers')) {
+            $deletedTransferIds = explode(',', $request->deleted_transfers);
+            foreach ($deletedTransferIds as $deletedTransferId) {
+                $transfer = Transfer::find($deletedTransferId);
+                if ($transfer) {
                     if ($transfer->image && file_exists(public_path($transfer->image))) {
                         unlink(public_path($transfer->image));
                     }
-                    
-                    $transfer->image = 'transfer/' . $fileName;
+                    $transfer->delete();
                 }
-                $transfer->save();
             }
         }
-    }
-
-    // Add new Transfers
-    if (isset($data['new_transfer_keys']) && isset($data['new_transfer_values'])) {
-        for ($i = 0; $i < count($data['new_transfer_keys']); $i++) {
-            $newTransfer = new Transfer();
-            $newTransfer->transaction_id = $transaction->id;
-            $newTransfer->transfer_key = $data['new_transfer_keys'][$i];
-            $newTransfer->transfer_value = $data['new_transfer_values'][$i];
-
-            // Check if an image is uploaded
-            if ($request->hasFile("new_transfer_images.$i")) {
-                $file = $request->file("new_transfer_images.$i");
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $destinationPath = public_path('transfer');
-
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0755, true);
+    
+        // Update existing Expenses
+        if (isset($data['expense_ids'])) {
+            foreach ($data['expense_ids'] as $expenseId) {
+                $expense = Expenses::find($expenseId);
+                if ($expense) {
+                    $expense->expenses_key = $data['expense_keys'][$expenseId];
+                    $expense->expenses_value = $data['expense_values'][$expenseId];
+                    $expense->save();
                 }
-
-                $file->move($destinationPath, $fileName);
-                $newTransfer->image = 'transfer/' . $fileName;
             }
-            $newTransfer->save();
         }
+    
+        // Add new Expenses
+        if (isset($data['new_expense_keys']) && isset($data['new_expense_values'])) {
+            for ($i = 0; $i < count($data['new_expense_keys']); $i++) {
+                Expenses::create([
+                    'transaction_id' => $transaction->id,
+                    'expenses_key' => $data['new_expense_keys'][$i],
+                    'expenses_value' => $data['new_expense_values'][$i],
+                ]);
+            }
+        }
+    
+        // Delete Expenses
+        if ($request->filled('deleted_expenses')) {
+            $deletedExpenseIds = explode(',', $request->deleted_expenses);
+            Expenses::whereIn('id', $deletedExpenseIds)->delete();
+        }
+    
+        return redirect()->back()->with('success', 'Transaction updated successfully!');
     }
-
-    return redirect()->route('transaction.index')->with('success', 'Transaction updated successfully!');
-}
-
+    
 
 
 

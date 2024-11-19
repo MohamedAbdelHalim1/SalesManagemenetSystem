@@ -17,10 +17,10 @@
                     @if (is_null($openClose->close_at))
                     <form method="POST" action="{{ route('transactions.closeDay', $openClose->id) }}" onsubmit="return confirm('Are you sure you want to close the day?')">
                         @csrf
-                        <input type="hidden" name="total_cash" value="{{ $totalcashforclose }}">
+                        <input type="hidden" id="total_cash" name="total_cash" value="">
                         <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded" style="float:right;">Close Day</button>
-                    </form>
-                @endif
+                    </form>                    
+                    @endif
                 </div>
 
                 
@@ -40,13 +40,13 @@
                             <th class="py-2 px-4 border-b">Orders Delivered</th>
                             <th class="py-2 px-4 border-b">Total Remaining</th>
                             <th class="py-2 px-4 border-b">Sales Commission</th>
-                            <th class="py-2 px-4 border-b">Total Cash</th>
+                            <th class="py-2 px-4 border-b">Total After Commession</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php $totalCashSum = 0; @endphp
                         @foreach($openClose->transactions as $transaction)
-                            @php $totalCashSum += $transaction->total_cash; @endphp
+                            @php $totalCashSum += $transaction->total_remaining - $transaction->sales_commission; @endphp
                             <tr>
                                 <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
                                 <td class="py-2 px-4 border-b text-center">{{ $transaction->reference_collection }}</td>
@@ -55,7 +55,7 @@
                                 <td class="py-2 px-4 border-b text-center">{{ $transaction->order_delivered }}</td>
                                 <td class="py-2 px-4 border-b text-center">{{ $transaction->total_remaining }}</td>
                                 <td class="py-2 px-4 border-b text-center">{{ $transaction->sales_commission }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->total_cash }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ $transaction->total_remaining - $transaction->sales_commission }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -74,8 +74,8 @@
                         <tr>
                             <th class="py-2 px-4 border-b">Transaction ID</th>
                             <th class="py-2 px-4 border-b">Transfer Key</th>
-                            <th class="py-2 px-4 border-b">Transfer Value</th>
                             <th class="py-2 px-4 border-b">Transfer Image</th>
+                            <th class="py-2 px-4 border-b">Transfer Value</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,7 +86,6 @@
                                 <tr>
                                     <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_key }}</td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_value }}</td>
                                     <td class="py-2 px-4 border-b text-center">
                                         @if($transfer->image)
                                             <a href="{{ asset($transfer->image) }}" target="_blank">
@@ -96,6 +95,8 @@
                                             <span>No image attached</span>
                                         @endif
                                     </td>
+                                    <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_value }}</td>
+                                    
                                 </tr>
                             @endforeach
                         @endforeach
@@ -208,8 +209,8 @@
 
                 <!-- Final Calculation -->
                 <div class="mt-8 text-right" style="float: right;">
-                    <h4 class="font-semibold text-xl">Final Cash Calculation:</h4>
-                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum) }} LE</p>
+                    <h4 class="font-semibold text-xl" style="font-size: 16px;">Final Cash Calculation:(Total Cash after commession - (Total transfers(Sales\Accountants) + total Expenses))</h4>
+                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum+$totalMyExpenseValueSum) }} LE</p>
                 </div>
             </div>
         </div>
@@ -250,4 +251,21 @@
             location.reload();
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Calculate the Final Cash
+            const totalCashSum = {{ $totalCashSum }};
+            const totalTransferValueSum = {{ $totalTransferValueSum }};
+            const totalExpenseValueSum = {{ $totalExpenseValueSum }};
+            const totalMyExpenseValueSum = {{ $totalMyExpenseValueSum }};
+            const finalCash = totalCashSum - (totalTransferValueSum + totalExpenseValueSum + totalMyExpenseValueSum);
+    
+            // Set the value of the hidden input field
+            const totalCashInput = document.getElementById('total_cash');
+            if (totalCashInput) {
+                totalCashInput.value = finalCash;
+            }
+        });
+    </script>
+    
 </x-app-layout>

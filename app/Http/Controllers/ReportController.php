@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expenses;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,12 +25,16 @@ class ReportController extends Controller
 
     public function show($id)
     {
-        // Retrieve the open_close record with related transactions and coin by ID
+        // Retrieve the open_close record with related transactions, transfers, expenses, and coin by ID
         $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses', 'coin'])
             ->findOrFail($id);
-
-        return view('reports.show', compact('openClose'));
+    
+        // Retrieve general expenses related to the openClose transactions
+        $generalExpenses = Expenses::whereIn('transaction_id', $openClose->transactions->pluck('id'))->get();
+    
+        return view('reports.show', compact('openClose', 'generalExpenses'));
     }
+    
 
 
     public function accountingReport($userId)

@@ -27,22 +27,37 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'role_id' => 'required|exists:roles,id',
-        ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // Hash password
-            'role_id' => $request->role_id,
-        ]);
-
-        return redirect()->route('user.index')->with('success', 'User created successfully.');
+        // Extract all users from the request
+        $users = $request->all();
+    
+        // Ensure we can process an array of users
+        foreach ($users as $userData) {
+            // Validate each user's data
+            $validator = validator($userData, [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6',
+                'role_id' => 'required|exists:roles,id',
+            ]);
+    
+            // Skip invalid users and continue with valid ones
+            if ($validator->fails()) {
+                continue; // Log or notify about invalid rows if needed
+            }
+    
+            // Create user in the database
+            $validated = $validator->validated();
+            User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => $validated['role_id'],
+            ]);
+        }
+    
+        return response()->json(['success' => true, 'message' => 'Users imported successfully']);
     }
+    
 
     public function edit(User $user)
     {
