@@ -13,7 +13,7 @@
                     <!-- Add New User Button -->
                     <div class="mb-4 text-right">
                         <a href="{{ route('users.create') }}"
-                            class="bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            class="bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="float:left;">
                             Add New User
                         </a>
                         <button id="importUsersBtn" class="bg-gray-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" style="float:right;">
