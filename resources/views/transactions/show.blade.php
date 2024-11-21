@@ -175,7 +175,7 @@
                 </div>
 
                 <!-- Final Calculation -->
-                <div class="mt-8 text-right">
+                <div class="mt-8 text-right" style="float: left;">
                     <h4 class="font-semibold text-xl inline-flex items-center">
                         Final Cash Calculation:
                         <span class="tooltip-container ml-2">
