@@ -11,168 +11,293 @@
 
                 <!-- OpenClose Information -->
                 <h3 class="font-semibold text-lg mb-4">Transaction Information</h3>
-
-                <div class="text-right mt-4" style="float:right; display:flex;">
-                    <button onclick="printDiv('printableArea')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700">Print Report</button>
-                    @if (is_null($openClose->close_at))
-                    <form method="POST" action="{{ route('transactions.closeDay', $openClose->id) }}" onsubmit="return confirm('Are you sure you want to close the day?')">
-                        @csrf
-                        <input type="hidden" id="total_cash" name="total_cash" value="">
-                        <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded" style="float:right;">Close Day</button>
-                    </form>                    
-                    @endif
+                <!-- Print Button -->
+                <div class="text-right mt-4 no-print" style="float: right;">
+                    <button onclick="printDiv('printableArea')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Print Report</button>
                 </div>
-
                 <p>Open Date: {{ $openClose->open_at }}</p>
                 <p>Close Date: {{ $openClose->close_at ?? 'Open' }}</p>
+                
+                <br><br>
 
-                <!-- Transactions Table -->
-                <h3 class="font-semibold text-lg mt-6 mb-4">Transactions</h3>
-                <table id="transactionsTable" class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Reference Collection</th>
-                            <th class="py-2 px-4 border-b">Sales</th>
-                            <th class="py-2 px-4 border-b">Order Number</th>
-                            <th class="py-2 px-4 border-b">Orders Delivered</th>
-                            <th class="py-2 px-4 border-b">Sales Commission</th>
-                            <th class="py-2 px-4 border-b">Total Remaining</th>
-                            <th class="py-2 px-4 border-b">Total After Commission</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalCashSum = 0; @endphp
-                        @foreach($openClose->transactions as $transaction)
-                            @php $calculatedCash = $transaction->total_remaining - $transaction->sales_commission; @endphp
+                <!-- Daily Transactions -->
+                <div class="section-wrapper transactions-section">
+                    <div class="section-title">Daily Transactions</div>
+                    <table class="styled-table">
+                        <thead>
                             <tr>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->reference_collection }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->user->name }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->order_number }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->order_delivered }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->sales_commission }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->total_remaining }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $calculatedCash }}</td>
+                                <th>Transaction ID</th>
+                                <th>Reference Collection</th>
+                                <th>Sales</th>
+                                <th>Order Number</th>
+                                <th>Orders Delivered</th>
+                                <th>Total Collection</th>
+                                <th>Sales Commission</th>
+                                <th>Total After Commission</th>
                             </tr>
-                            @php $totalCashSum += $calculatedCash; @endphp
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="7" class="py-2 px-4 text-right font-bold">Total Cash:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalCashSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <!-- Transfers Table -->
-                <h5 class="font-semibold mt-6 mb-4">Transfers</h5>
-                <table id="transfersTable" class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Transfer Key</th>
-                            <th class="py-2 px-4 border-b">Transfer Image</th>
-                            <th class="py-2 px-4 border-b">Transfer Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalTransferValueSum = 0; @endphp
-                        @foreach($openClose->transactions as $transaction)
-                            @foreach($transaction->transfers as $transfer)
+                        </thead>
+                        <tbody>
+                            @php $totalCashSum = 0; @endphp
+                            @foreach($openClose->transactions as $transaction)
+                                @php
+                                    $totalCashSum += $transaction->total_remaining;
+                                    $totalCollection = $transaction->total_remaining + $transaction->sales_commission;
+                                @endphp
                                 <tr>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_key }}</td>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        @if($transfer->image)
-                                            <a href="{{ asset($transfer->image) }}" target="_blank">
-                                                <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-20 h-20 object-cover" />
-                                            </a>
-                                        @else
-                                            <span>No image attached</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_value }}</td>
+                                    <td>{{ $transaction->id }}</td>
+                                    <td>{{ $transaction->reference_collection }}</td>
+                                    <td>{{ $transaction->user->name }}</td>
+                                    <td>{{ $transaction->order_number }}</td>
+                                    <td>{{ $transaction->order_delivered }}</td>
+                                    <td>{{ $totalCollection }} LE</td>
+                                    <td>{{ $transaction->sales_commission }} LE</td>
+                                    <td>{{ $transaction->total_remaining }} LE</td>
                                 </tr>
-                                @php $totalTransferValueSum += $transfer->transfer_value; @endphp
                             @endforeach
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3" class="py-2 px-4 text-right font-bold">Total Transfer Value:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalTransferValueSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <!-- Expenses Table -->
-                <h5 class="font-semibold mt-6 mb-4">Expenses</h5>
-                <table id="expensesTable" class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Expense Key</th>
-                            <th class="py-2 px-4 border-b">Expense Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalExpenseValueSum = 0; @endphp
-                        @foreach($generalExpenses as $expense)
+                        </tbody>
+                        <tfoot>
                             <tr>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->transaction_id }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_key }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_value }}</td>
+                                <td colspan="7" class="text-right font-bold">Total Cash:</td>
+                                <td class="font-bold">{{ $totalCashSum }} LE</td>
                             </tr>
-                            @php $totalExpenseValueSum += $expense->expenses_value; @endphp
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Expenses:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalExpenseValueSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Sales Transfers -->
+                <div class="section-wrapper transfers-section">
+                    <div class="section-title">Sales Transfers</div>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Transfer Key</th>
+                                <th>Transfer Image</th>
+                                <th>Transfer Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalTransferValueSum = 0; @endphp
+                            @foreach($openClose->transactions as $transaction)
+                                @foreach($transaction->transfers as $transfer)
+                                    @php $totalTransferValueSum += $transfer->transfer_value; @endphp
+                                    <tr>
+                                        <td>{{ $transaction->id }}</td>
+                                        <td>{{ $transfer->transfer_key }}</td>
+                                        <td>
+                                            @if($transfer->image)
+                                                <a href="{{ asset($transfer->image) }}" target="_blank">
+                                                    <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-20 h-20 object-cover" />
+                                                </a>
+                                            @else
+                                                No image attached
+                                            @endif
+                                        </td>
+                                        <td>{{ $transfer->transfer_value }} LE</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-right font-bold">Total Transfer Value:</td>
+                                <td class="font-bold">{{ $totalTransferValueSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Sales Expenses -->
+                <div class="section-wrapper sales-expenses-section">
+                    <div class="section-title">Sales Expenses</div>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Expense Key</th>
+                                <th>Expense Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalExpenseValueSum = 0; @endphp
+                            @foreach($generalExpenses as $expense)
+                                @php $totalExpenseValueSum += $expense->expenses_value; @endphp
+                                <tr>
+                                    <td>{{ $expense->transaction_id }}</td>
+                                    <td>{{ $expense->expenses_key }}</td>
+                                    <td>{{ $expense->expenses_value }} LE</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-right font-bold">Total Sales Expense Value:</td>
+                                <td class="font-bold">{{ $totalExpenseValueSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Accountant Expenses -->
+                <div class="section-wrapper accountant-expenses-section">
+                    <div class="section-title">Accountant Expenses</div>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Expense Key</th>
+                                <th>Expense Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalMyExpenseValueSum = 0; @endphp
+                            @foreach($accountingExpenses as $expense)
+                                @php $totalMyExpenseValueSum += $expense->expenses_value; @endphp
+                                <tr>
+                                    <td>{{ $expense->transaction_id }}</td>
+                                    <td>{{ $expense->expenses_key }}</td>
+                                    <td>{{ $expense->expenses_value }} LE</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-right font-bold">Total Accountant Expenses:</td>
+                                <td class="font-bold">{{ $totalMyExpenseValueSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
                 <!-- Final Calculation -->
-                <div class="mt-8 text-right" style="float:right;">
-                    <h4 class="font-semibold text-xl">Final Cash Calculation:</h4>
-                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum) }} LE</p>
+                <div class="mt-8 text-right">
+                    <h4 class="font-semibold text-xl inline-flex items-center">
+                        Final Cash Calculation:
+                    </h4>
+                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum + $totalMyExpenseValueSum) }} LE</p>
                 </div>
+
+                
             </div>
         </div>
     </div>
 
-    <!-- Include DataTables CSS and JS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <style>
+        .section-wrapper {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .transactions-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #007BFF;
+        }
+
+        .transfers-section {
+            background-color: #fff3cd;
+            border-left: 4px solid #FFC107;
+        }
+
+        .sales-expenses-section {
+            background-color: #f2f9f2;
+            border-left: 4px solid #28a745;
+        }
+
+        .accountant-expenses-section {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .styled-table th, .styled-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .styled-table th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+    </style>
 
     <script>
-        $(document).ready(function() {
-            $('#transactionsTable, #transfersTable, #expensesTable').DataTable({
-                searching: false,
-                paging: false,
-                info: false
-            });
-
-            // Set hidden input value for total_cash
-            const totalCashSum = {{ $totalCashSum }};
-            const totalTransferValueSum = {{ $totalTransferValueSum }};
-            const totalExpenseValueSum = {{ $totalExpenseValueSum }};
-            const finalCash = totalCashSum - (totalTransferValueSum + totalExpenseValueSum);
-            $('#total_cash').val(finalCash);
-        });
-
         function printDiv(divId) {
-            const content = document.getElementById(divId).innerHTML;
-            const originalContent = document.body.innerHTML;
-            document.body.innerHTML = content;
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
+            const printableContent = document.getElementById(divId).cloneNode(true); // Clone the content
+            const printWindow = window.open('', '_blank'); // Open a new window for printing
+            printWindow.document.open(); // Open the document for writing
+
+            // Inject the cloned content into a clean HTML structure
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <title>Report</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                            padding: 0;
+                        }
+                        h3, h4 {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin: 20px 0 10px 0;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
+                        }
+                        th, td {
+                            text-align: center;
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                        }
+                        th {
+                            background-color: #f1f1f1;
+                            font-weight: bold;
+                        }
+                        .section-wrapper {
+                            margin-bottom: 20px;
+                            padding: 15px;
+                            border-radius: 8px;
+                            border: 1px solid #ccc;
+                        }
+                        .transactions-section {
+                            background-color: #f9f9f9;
+                            border-left: 4px solid #007BFF;
+                        }
+                        .transfers-section {
+                            background-color: #fff3cd;
+                            border-left: 4px solid #FFC107;
+                        }
+                        .expenses-section {
+                            background-color: #f2f9f2;
+                            border-left: 4px solid #28a745;
+                        }
+                        .no-print {
+                            display: none !important; /* Hide elements with the no-print class */
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printableContent.innerHTML} <!-- Insert the cloned content -->
+                </body>
+                </html>
+            `);
+
+            printWindow.document.close(); // Close the document for writing
+            printWindow.focus(); // Focus the new window
+            printWindow.print(); // Trigger the print dialog
+            printWindow.close(); // Close the print window after printing
         }
+
     </script>
 </x-app-layout>

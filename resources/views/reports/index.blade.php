@@ -67,16 +67,16 @@
                                 <td class="py-2 px-4 text-center open-date">{{ $total_expenses }}</td>
 
                                 <td class="py-2 px-4 text-center" style="display: flex;">
-                                    <a href="{{ route('reports.show', $openClose->id) }}" class="btn-same-size bg-gray-500 text-white px-4  hover:bg-blue-700">
+                                    <a href="{{ route('reports.show', $openClose->id) }}" class="btn-same-size">
                                         Show
                                     </a>
                                     @if(Auth::user()->role_id == 1 && $openClose->close_at !== null)
                                         <!-- Reopen Button for Admins Only -->
-                                        <button onclick="confirmReopen({{ $openClose->id }})" class="btn-same-size bg-gray-500 text-white ml-2">
+                                        <button onclick="confirmReopen({{ $openClose->id }})" class="btn-same-size" style="margin-left: 10px;">
                                             Reopen
                                         </button>
                                     @endif
-                                </td>
+                                </td>                                
                             </tr>
                         @endforeach
                     </tbody>
@@ -95,8 +95,8 @@
             margin-top: 15px;
         }
         .btn-same-size {
-            width: 65px;
-            height: 35px;
+            width: 70px; /* Set a consistent width */
+            height: 40px; /* Set a consistent height */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -105,12 +105,13 @@
             color: white;
             border-radius: 4px;
             font-weight: bold;
+            transition: background-color 0.3s; /* Smooth hover effect */
         }
-    
+
         .btn-same-size:hover {
             background-color: #4b5563; /* Slightly darker gray on hover */
         }
-    
+
     </style>
     <!-- JavaScript to Filter by Date Range -->
     <script>

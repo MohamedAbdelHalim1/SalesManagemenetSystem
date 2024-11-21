@@ -31,7 +31,7 @@
                         <div style="display: flex; flex-direction:column; justify-content:space-around;">
                             <div class="mb-4">
                                 <label for="total_cash" class="block font-semibold mb-2">Total Collection</label>
-                                <input type="number" class="form-input border rounded px-3" id="total_cash" name="total_cash" value="{{ $transaction->total_cash }}">
+                                <input type="number" class="form-input border rounded px-3" id="total_cash" name="total_cash" value="{{ $transaction->total_remaining + $transaction->sales_commission }}">
                             </div>
                             <div class="mb-4">
                                 <label for="sales_commission" class="block font-semibold mb-2">Commission Value</label>

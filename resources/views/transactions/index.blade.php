@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900">
                     <!-- Action Buttons -->
                     <div class="flex justify-end mb-4">
-                        <a href="{{ route('transaction.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Create Transaction</a>
+                        <a href="{{ route('transaction.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" style="margin-right: 5px;">Create Transaction</a>
                         <a href="{{ route('expenses.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded">Add My Expenses</a>
                     </div>
 
@@ -32,7 +32,7 @@
                                     <td class="py-2 px-4 border-b text-center">{{ $record->close_at ?? 'Open' }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->transactions->count() }}</td>
                                     <td class="py-2 px-4 border-b text-center flex">
-                                        <a href="{{ route('transactions.show', $record->id) }}" class="btn-same-size">Show Details</a>
+                                        <a href="{{ route('transactions.show', $record->id) }}" class="btn-same-size" style="margin-right: 5px;">Show Details</a>
                                         @if(empty($record->close_at))
                                             <button onclick="openModal({{ $record->id }})" class="btn-same-size ml-2">Manage Transactions</button>
                                         @endif

@@ -11,9 +11,8 @@
 
                 <!-- OpenClose Information -->
                 <h3 class="font-semibold text-lg mb-4">Transaction Information</h3>
-
-                <div class="text-right mt-4" style="float:right;display:flex;">
-                    <button onclick="printDiv('printableArea')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700">Print Report</button>
+                <div class="text-right mt-4 no-print" style="float:right;display:flex;">
+                    <button onclick="printDiv('printableArea')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-blue-700" style="margin-right: 10px;">Print Report</button>
                     @if (is_null($openClose->close_at))
                     <form method="POST" action="{{ route('transactions.closeDay', $openClose->id) }}" onsubmit="return confirm('Are you sure you want to close the day?')">
                         @csrf
@@ -22,199 +21,289 @@
                     </form>                    
                     @endif
                 </div>
-
-                
-                
                 <p>Open Date: {{ $openClose->open_at }}</p>
                 <p>Close Date: {{ $openClose->close_at ?? 'Open' }}</p>
+                <br><br>
 
-                <!-- Transactions Table -->
-                <h3 class="font-semibold text-lg mt-6 mb-4">Transactions</h3>
-                <table id="transactionsTable" class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Reference Collection</th>
-                            <th class="py-2 px-4 border-b">Sales</th>
-                            <th class="py-2 px-4 border-b">Order Number</th>
-                            <th class="py-2 px-4 border-b">Orders Delivered</th>
-                            <th class="py-2 px-4 border-b">Total Remaining</th>
-                            <th class="py-2 px-4 border-b">Sales Commission</th>
-                            <th class="py-2 px-4 border-b">Total After Commession</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalCashSum = 0; @endphp
-                        @foreach($openClose->transactions as $transaction)
-                            @php $totalCashSum += $transaction->total_remaining - $transaction->sales_commission; @endphp
+                <!-- Transactions Section -->
+                <div class="section-wrapper transactions-section">
+                    <div class="section-title">Daily Transactions</div>
+                    <table id="transactionsTable">
+                        <thead>
                             <tr>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->reference_collection }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->user->name }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->order_number }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->order_delivered }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->total_remaining }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->sales_commission }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $transaction->total_remaining - $transaction->sales_commission }}</td>
+                                <th>Transaction ID</th>
+                                <th>Reference Collection</th>
+                                <th>Sales</th>
+                                <th>Order Number</th>
+                                <th>Orders Delivered</th>
+                                <th>Total Collection</th>
+                                <th>Sales Commission</th>
+                                <th>Total After Commission</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="7" class="py-2 px-4 text-right font-bold">Total Cash:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalCashSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <!-- Transfers Table -->
-                <h5 class="font-semibold mt-6 mb-4">Transfers</h5>
-                <table id="transfersTable" class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Transfer Key</th>
-                            <th class="py-2 px-4 border-b">Transfer Image</th>
-                            <th class="py-2 px-4 border-b">Transfer Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalTransferValueSum = 0; @endphp
-                        @foreach($openClose->transactions as $transaction)
-                            @foreach($transaction->transfers as $transfer)
-                                @php $totalTransferValueSum += $transfer->transfer_value; @endphp
+                        </thead>
+                        <tbody>
+                            @php $totalCashSum = 0; @endphp
+                            @foreach($openClose->transactions as $transaction)
+                                @php
+                                    $totalCashSum += $transaction->total_remaining;
+                                    $totalCollection = $transaction->total_remaining + $transaction->sales_commission;
+                                @endphp
                                 <tr>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transaction->id }}</td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_key }}</td>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        @if($transfer->image)
-                                            <a href="{{ asset($transfer->image) }}" target="_blank">
-                                                <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-20 h-20 object-cover" />
-                                            </a>
-                                        @else
-                                            <span>No image attached</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $transfer->transfer_value }}</td>
-                                    
+                                    <td>{{ $transaction->id }}</td>
+                                    <td>{{ $transaction->reference_collection }}</td>
+                                    <td>{{ $transaction->user->name }}</td>
+                                    <td>{{ $transaction->order_number }}</td>
+                                    <td>{{ $transaction->order_delivered }}</td>
+                                    <td>{{ $totalCollection }} LE</td>
+                                    <td>{{ $transaction->sales_commission }} LE</td>
+                                    <td>{{ $transaction->total_remaining }} LE</td>
                                 </tr>
                             @endforeach
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3" class="py-2 px-4 text-right font-bold">Total Transfer Value:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalTransferValueSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-
-                <!-- Expenses Table -->
-                <h5 class="font-semibold mt-6 mb-4">Sales Expenses</h5>
-                <table id="expensesTable" class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Expense Key</th>
-                            <th class="py-2 px-4 border-b">Expense Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalExpenseValueSum = 0; @endphp
-                        @foreach($generalExpenses as $expense)
-                            @php $totalExpenseValueSum += $expense->expenses_value; @endphp
+                        </tbody>
+                        <tfoot>
                             <tr>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->transaction_id }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_key }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_value }}</td>
+                                <td colspan="7" class="text-right font-bold">Total Cash:</td>
+                                <td class="font-bold">{{ $totalCashSum }} LE</td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Sales Expense Value:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalExpenseValueSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
+                </div>
 
-                <!-- My Expenses Table -->
-                <h5 class="font-semibold mt-6 mb-4">Accountant Expenses</h5>
-                <table id="myExpensesTable" class="min-w-full bg-white" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Transaction ID</th>
-                            <th class="py-2 px-4 border-b">Expense Key</th>
-                            <th class="py-2 px-4 border-b">Expense Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalMyExpenseValueSum = 0; @endphp
-                        @foreach($accountingExpenses as $expense)
-                            @php $totalMyExpenseValueSum += $expense->expenses_value; @endphp
+                <!-- Transfers Section -->
+                <div class="section-wrapper transfers-section">
+                    <div class="section-title">Sales Transfers</div>
+                    <table id="transfersTable">
+                        <thead>
                             <tr>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->transaction_id }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_key }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ $expense->expenses_value }}</td>
+                                <th>Transaction ID</th>
+                                <th>Transfer Key</th>
+                                <th>Transfer Image</th>
+                                <th>Transfer Value</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="py-2 px-4 text-right font-bold">Total Accountant Expenses:</td>
-                            <td class="py-2 px-4 text-center font-bold">{{ $totalMyExpenseValueSum }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @php $totalTransferValueSum = 0; @endphp
+                            @foreach($openClose->transactions as $transaction)
+                                @foreach($transaction->transfers as $transfer)
+                                    @php $totalTransferValueSum += $transfer->transfer_value; @endphp
+                                    <tr>
+                                        <td>{{ $transaction->id }}</td>
+                                        <td>{{ $transfer->transfer_key }}</td>
+                                        <td>
+                                            @if($transfer->image)
+                                                <a href="{{ asset($transfer->image) }}" target="_blank">
+                                                    <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-20 h-20 object-cover" />
+                                                </a>
+                                            @else
+                                                No image attached
+                                            @endif
+                                        </td>
+                                        <td>{{ $transfer->transfer_value }} LE</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-right font-bold">Total Transfer Value:</td>
+                                <td class="font-bold">{{ $totalTransferValueSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
+                <!-- Sales Expenses Section -->
+                <div class="section-wrapper sales-expenses-section">
+                    <div class="section-title">Sales Expenses</div>
+                    <table id="expensesTable">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Expense Key</th>
+                                <th>Expense Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalExpenseValueSum = 0; @endphp
+                            @foreach($generalExpenses as $expense)
+                                @php $totalExpenseValueSum += $expense->expenses_value; @endphp
+                                <tr>
+                                    <td>{{ $expense->transaction_id }}</td>
+                                    <td>{{ $expense->expenses_key }}</td>
+                                    <td>{{ $expense->expenses_value }} LE</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-right font-bold">Total Sales Expense Value:</td>
+                                <td class="font-bold">{{ $totalExpenseValueSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
-        <!-- Coins Table -->
-        <h5 class="font-semibold mt-6 mb-4">Coins</h5>
-        <table class="min-w-full bg-white" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th class="py-2 px-4 border-b">0.5</th>
-                    <th class="py-2 px-4 border-b">1</th>
-                    <th class="py-2 px-4 border-b">10</th>
-                    <th class="py-2 px-4 border-b">20</th>
-                    <th class="py-2 px-4 border-b">50</th>
-                    <th class="py-2 px-4 border-b">100</th>
-                    <th class="py-2 px-4 border-b">200</th>
-                    <th class="py-2 px-4 border-b">Money Shortage</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @if($openClose->coin)
-                    <tr>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_0_5 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_1 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_10 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_20 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_50 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_100 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->coin_200 }}</td>
-                        <td class="py-2 px-4 border-b text-center">{{ $openClose->coin->money_shortage }}</td>
-                    </tr>
-                @else
-                    <tr>
-                        <td colspan="8" class="py-2 px-4 border-b text-center">No currency added yet</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table><br><br>
-
-
+                <!-- Accountant Expenses Section -->
+                <div class="section-wrapper accountant-expenses-section">
+                    <div class="section-title">Accountant Expenses</div>
+                    <table id="myExpensesTable">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Expense Key</th>
+                                <th>Expense Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalMyExpenseValueSum = 0; @endphp
+                            @foreach($accountingExpenses as $expense)
+                                @php $totalMyExpenseValueSum += $expense->expenses_value; @endphp
+                                <tr>
+                                    <td>{{ $expense->transaction_id }}</td>
+                                    <td>{{ $expense->expenses_key }}</td>
+                                    <td>{{ $expense->expenses_value }} LE</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-right font-bold">Total Accountant Expenses:</td>
+                                <td class="font-bold">{{ $totalMyExpenseValueSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
                 <!-- Final Calculation -->
-                <div class="mt-8 text-right" style="float: right;">
-                    <h4 class="font-semibold text-xl" style="font-size: 16px;">Final Cash Calculation:(Total Cash after commession - (Total transfers(Sales\Accountants) + total Expenses))</h4>
-                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum+$totalMyExpenseValueSum) }} LE</p>
+                <div class="mt-8 text-right">
+                    <h4 class="font-semibold text-xl inline-flex items-center">
+                        Final Cash Calculation:
+                        <span class="tooltip-container ml-2">
+                            <i class="tooltip-icon">?</i>
+                            <span class="tooltip-text">
+                                This number is calculated as:
+                                <br>
+                                Total Cash After Commission - (Total Transfers + Total Expenses (Sales + Accountants))
+                            </span>
+                        </span>
+                    </h4>
+                    <p class="font-bold">{{ $totalCashSum - ($totalTransferValueSum + $totalExpenseValueSum + $totalMyExpenseValueSum) }} LE</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <style>
+        /* General Section Styling */
+        .section-wrapper {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        
+        /* Specific Section Colors */
+        .transactions-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #007BFF;
+        }
+        
+        .transfers-section {
+            background-color: #fff3cd;
+            border-left: 4px solid #FFC107;
+        }
+        
+        .sales-expenses-section {
+            background-color: #f2f9f2;
+            border-left: 4px solid #28a745;
+        }
+        
+        .accountant-expenses-section {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+        }
+        
+        /* Table Styling */
+        .section-wrapper table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .section-wrapper th, .section-wrapper td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .section-wrapper th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+        
+        /* Header Titles for Sections */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+          /* Tooltip styling */
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .tooltip-icon {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        background-color: #007BFF;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 18px;
+        border-radius: 50%;
+        margin-left: 5px;
+        font-style: normal;
+    }
+
+    .tooltip-text {
+        display: none;
+        position: absolute;
+        bottom: 125%; /* Position above the tooltip icon */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        line-height: 1.4;
+        z-index: 100;
+    }
+
+    .tooltip-text::after {
+        content: '';
+        position: absolute;
+        top: 100%; /* Arrow pointing downwards */
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+        display: block;
+    }
+    </style>
+
 
     <!-- Include DataTables CSS and JS for Styling and Interactive Features -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -243,13 +332,63 @@
 
 
         function printDiv(divId) {
-            const content = document.getElementById(divId).innerHTML;
-            const originalContent = document.body.innerHTML;
-            document.body.innerHTML = content;
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
+            const printableContent = document.getElementById(divId).cloneNode(true); // Clone the content
+            const printWindow = window.open('', '_blank'); // Open a new window for printing
+            printWindow.document.open(); // Open the document for writing
+
+            // Write the HTML structure for the print window
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <title>Print Preview</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                            padding: 0;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
+                        }
+                        th, td {
+                            text-align: center;
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                        }
+                        th {
+                            background-color: #f1f1f1;
+                            font-weight: bold;
+                        }
+                        .section-title {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin-bottom: 10px;
+                            color: #333;
+                        }
+                        .tooltip-container {
+                            display: none;
+                        }
+                        .no-print {
+                            display: none !important;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printableContent.innerHTML} <!-- Insert the cloned content -->
+                </body>
+                </html>
+            `);
+
+            printWindow.document.close(); // Close the document
+            printWindow.focus(); // Focus on the new window
+            printWindow.print(); // Trigger the print dialog
+            printWindow.close(); // Close the print window after printing
         }
+
+
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

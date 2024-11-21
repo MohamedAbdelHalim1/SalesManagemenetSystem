@@ -16,12 +16,13 @@
                             class="bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="float:left;">
                             Add New User
                         </a>
-                        <button id="importUsersBtn" class="bg-gray-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" style="float:right;">
+                        <button id="importUsersBtn" class="bg-gray-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" style="float:left; margin-left:10px;">
                             Import Users
                         </button>
                     </div>
                 @endif
 
+                <br><br>
 
                 <!-- Import Users Modal -->
                 <div id="importUsersModal" class="hidden fixed inset-0">
@@ -109,7 +110,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* Ensure the modal starts hidden */
+            display: none; /* Modal starts hidden */
             justify-content: center;
             align-items: center;
         }
@@ -122,6 +123,10 @@
             width: 100%;
         }
 
+        /* Ensure the modal only displays when active */
+        #importUsersModal.hidden {
+            display: none !important;
+        }
 
     </style>
 
@@ -152,95 +157,97 @@
         });
     </script>
     <script>
-     document.addEventListener('DOMContentLoaded', function () {
-    const importUsersBtn = document.getElementById('importUsersBtn');
-    const importUsersModal = document.getElementById('importUsersModal');
-    const importCancelBtn = document.getElementById('importCancelBtn');
-    const importSubmitBtn = document.getElementById('importSubmitBtn');
-    const importFileInput = document.getElementById('importFile');
+        document.addEventListener('DOMContentLoaded', function () {
+            const importUsersBtn = document.getElementById('importUsersBtn');
+            const importUsersModal = document.getElementById('importUsersModal');
+            const importCancelBtn = document.getElementById('importCancelBtn');
+            const importSubmitBtn = document.getElementById('importSubmitBtn');
+            const importFileInput = document.getElementById('importFile');
 
-    // Function to show the modal
-    function showModal() {
-        importUsersModal.classList.remove('hidden');
-        importUsersModal.style.display = 'flex';
-    }
-
-    // Function to hide the modal
-    function hideModal() {
-        importUsersModal.classList.add('hidden');
-        importUsersModal.style.display = 'none';
-        importFileInput.value = ''; // Clear the file input
-    }
-
-    // Show modal on button click
-    importUsersBtn.addEventListener('click', showModal);
-
-    // Hide modal on Cancel button click
-    importCancelBtn.addEventListener('click', hideModal);
-
-    // Handle file import on Import button click
-    importSubmitBtn.addEventListener('click', () => {
-        const file = importFileInput.files[0];
-        if (!file) {
-            alert('Please select a CSV file.');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const csvData = e.target.result;
-            const rows = csvData.split('\n');
-
-            // Skip empty rows and ensure all columns exist
-            const users = rows.slice(1).map(row => {
-                const columns = row.split(',');
-                if (columns.length < 4 || columns.some(col => col.trim() === '')) {
-                    return null; // Skip invalid rows
-                }
-                const [name, email, password, role_id] = columns;
-                return { name: name.trim(), email: email.trim(), password: password.trim(), role_id: role_id.trim() };
-            }).filter(user => user !== null); // Remove null entries
-
-            if (users.length === 0) {
-                alert('No valid users found in the file.');
-                return;
+            // Show Modal
+            function showModal() {
+                importUsersModal.classList.remove('hidden');
+                importUsersModal.style.display = 'flex';
             }
 
-            // Send data to the server
-            fetch('{{ route('users.store') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify(users),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Users imported successfully.');
-                        window.location.reload();
-                    } else {
-                        alert('Error importing users: ' + data.message);
+            // Hide Modal
+            function hideModal() {
+                importUsersModal.classList.add('hidden');
+                importUsersModal.style.display = 'none';
+                importFileInput.value = ''; // Clear file input
+            }
+
+            // Ensure Buttons Exist Before Adding Event Listeners
+            if (importUsersBtn) importUsersBtn.addEventListener('click', showModal);
+            if (importCancelBtn) importCancelBtn.addEventListener('click', hideModal);
+
+            // File Import Logic
+            if (importSubmitBtn) {
+                importSubmitBtn.addEventListener('click', () => {
+                    const file = importFileInput.files[0];
+                    if (!file) {
+                        alert('Please select a CSV file.');
+                        return;
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while importing users.');
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const csvData = e.target.result;
+                        const rows = csvData.split('\n');
+
+                        const users = rows.slice(1).map(row => {
+                            const columns = row.split(',');
+                            if (columns.length < 4 || columns.some(col => col.trim() === '')) {
+                                return null; // Skip invalid rows
+                            }
+                            const [name, email, password, role_id] = columns;
+                            return { name: name.trim(), email: email.trim(), password: password.trim(), role_id: role_id.trim() };
+                        }).filter(user => user !== null);
+
+                        if (users.length === 0) {
+                            alert('No valid users found in the file.');
+                            return;
+                        }
+
+                        // Fetch API to send data to server
+                        fetch('{{ route('users.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: JSON.stringify(users),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Users imported successfully.');
+                                    window.location.reload();
+                                } else {
+                                    alert('Error importing users: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while importing users.');
+                            });
+
+                        hideModal();
+                    };
+                    reader.readAsText(file);
                 });
+            }
 
-            hideModal(); // Hide modal after processing
-        };
-        reader.readAsText(file);
-    });
+            // Close Modal on Overlay Click
+            if (importUsersModal) {
+                importUsersModal.addEventListener('click', (event) => {
+                    if (event.target === importUsersModal) {
+                        hideModal();
+                    }
+                });
+            }
+        });
 
-    // Close modal if clicking outside modal content
-    importUsersModal.addEventListener('click', (event) => {
-        if (event.target === importUsersModal) {
-            hideModal();
-        }
-    });
-});
 
     </script>
     

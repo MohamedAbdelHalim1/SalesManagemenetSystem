@@ -30,9 +30,20 @@ class ReportController extends Controller
             ->findOrFail($id);
     
         // Retrieve general expenses related to the openClose transactions
-        $generalExpenses = Expenses::whereIn('transaction_id', $openClose->transactions->pluck('id'))->get();
+        $accountingExpenses = [];
+        $generalExpenses = [];
     
-        return view('reports.show', compact('openClose', 'generalExpenses'));
+        foreach ($openClose->transactions as $transaction) {
+            foreach ($transaction->expenses as $expense) {
+                if ($expense->transaction->user->role_id == 2) {
+                    $accountingExpenses[] = $expense;
+                } else {
+                    $generalExpenses[] = $expense;
+                }
+            }
+        }
+
+        return view('reports.show', compact('openClose', 'generalExpenses' , 'accountingExpenses'));
     }
     
 
