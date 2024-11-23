@@ -56,13 +56,16 @@ class TransactionController extends Controller
         return back()->withErrors('Unable to close the day.');
     }
 
+
     public function show($id)
     {
-        $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses', 'coin'])->findOrFail($id);
-        $totalcashforclose = 0;
+        $openClose = OpenClose::with([
+            'transactions.transfers',
+            'transactions.expenses',
+            'transactions.coin',
+        ])->findOrFail($id);
     
-        // Get the authenticated user's role
-        $userRole = Auth::user()->role_id;
+        $totalcashforclose = 0;
     
         // Calculate total cash for closing
         foreach ($openClose->transactions as $transaction) {
@@ -96,6 +99,8 @@ class TransactionController extends Controller
         return view('transactions.show', compact('openClose', 'totalcashforclose', 'accountingExpenses', 'generalExpenses'));
     }
     
+
+        
 
     public function openTransaction()
     {
@@ -205,6 +210,21 @@ class TransactionController extends Controller
             }
         }
 
+
+            // Save Coins
+        Coin::create([
+            'coin_200' => $data['coin_200'] ?? 0,
+            'coin_100' => $data['coin_100'] ?? 0,
+            'coin_50' => $data['coin_50'] ?? 0,
+            'coin_20' => $data['coin_20'] ?? 0,
+            'coin_10' => $data['coin_10'] ?? 0,
+            'coin_5' => $data['coin_5'] ?? 0,
+            'coin_1' => $data['coin_1'] ?? 0,
+            'transaction_id' => $transaction->id,
+            'money_shortage' => ($data['cash_equivalent'] ?? 0) - ($data['total_cash'] ?? 0),
+        ]);
+
+
         return redirect()->route('transaction.create')->with('success', 'Transaction saved successfully.');
     }
 
@@ -213,7 +233,7 @@ class TransactionController extends Controller
 
     public function edit($id)
     {
-        $transaction = Transaction::with(['transfers', 'expenses'])->findOrFail($id);
+        $transaction = Transaction::with(['transfers', 'expenses', 'coin'])->findOrFail($id);
         return view('transactions.edit', compact('transaction'));
     }
 
@@ -333,6 +353,31 @@ class TransactionController extends Controller
             Expenses::whereIn('id', $deletedExpenseIds)->delete();
         }
     
+         // Update coin distribution
+        if ($transaction->coin) {
+            $transaction->coin->update([
+                'coin_200' => $data['coin_200'] ?? 0,
+                'coin_100' => $data['coin_100'] ?? 0,
+                'coin_50' => $data['coin_50'] ?? 0,
+                'coin_20' => $data['coin_20'] ?? 0,
+                'coin_10' => $data['coin_10'] ?? 0,
+                'coin_5' => $data['coin_5'] ?? 0,
+                'coin_1' => $data['coin_1'] ?? 0,
+            ]);
+        } else {
+            // Create a new coin record if none exists
+            $transaction->coin()->create([
+                'coin_200' => $data['coin_200'] ?? 0,
+                'coin_100' => $data['coin_100'] ?? 0,
+                'coin_50' => $data['coin_50'] ?? 0,
+                'coin_20' => $data['coin_20'] ?? 0,
+                'coin_10' => $data['coin_10'] ?? 0,
+                'coin_5' => $data['coin_5'] ?? 0,
+                'coin_1' => $data['coin_1'] ?? 0,
+            ]);
+        }
+
+
         return redirect()->back()->with('success', 'Transaction updated successfully!');
     }
     
@@ -346,28 +391,61 @@ class TransactionController extends Controller
     }
 
 
-    public function coins($open_close_id , $total_cash)
+    public function coins($open_close_id)
     {
-        return view('transactions.coins', ['open_close_id' => $open_close_id , 'total_cash'=>$total_cash]);
-    }
+        $openClose = OpenClose::with('transactions.coin')->findOrFail($open_close_id);
 
-    public function storeCoins(Request $request, $open_close_id)
-    {
-        Coin::create([
-            'coin_0_5' => $request->input('coin_0_5'),
-            'coin_1' => $request->input('coin_1'),
-            'coin_10' => $request->input('coin_10'),
-            'coin_20' => $request->input('coin_20'),
-            'coin_50' => $request->input('coin_50'),
-            'coin_100' => $request->input('coin_100'),
-            'coin_200' => $request->input('coin_200'),
+        // Aggregate total coins across all transactions
+        $totalCoins = [
+            'coin_200' => 0,
+            'coin_100' => 0,
+            'coin_50' => 0,
+            'coin_20' => 0,
+            'coin_10' => 0,
+            'coin_1' => 0,
+        ];
+
+        foreach ($openClose->transactions as $transaction) {
+            if ($transaction->coin) {
+                $totalCoins['coin_200'] += $transaction->coin->coin_200;
+                $totalCoins['coin_100'] += $transaction->coin->coin_100;
+                $totalCoins['coin_50'] += $transaction->coin->coin_50;
+                $totalCoins['coin_20'] += $transaction->coin->coin_20;
+                $totalCoins['coin_10'] += $transaction->coin->coin_10;
+                $totalCoins['coin_1'] += $transaction->coin->coin_1;
+            }
+        }
+
+        $totalCash = $openClose->transactions->sum('total_cash');
+        $totalCoinsValue = array_sum(array_map(fn($count, $value) => $count * $value, $totalCoins, [200, 100, 50, 20, 10, 1]));
+        $moneyShortage = $totalCash - $totalCoinsValue;
+
+        return view('transactions.coins', [
             'open_close_id' => $open_close_id,
-            'money_shortage' => $request->money_shortage,
+            'total_cash' => $totalCash,
+            'totalCoins' => $totalCoins,
+            'moneyShortage' => $moneyShortage,
         ]);
-        $userId = Auth::id();
-
-        return redirect()->route('reports.index' , $userId)->with('success', 'Day Closed Successfully!');
     }
+
+
+    // public function storeCoins(Request $request, $open_close_id)
+    // {
+    //     Coin::create([
+    //         'coin_0_5' => $request->input('coin_0_5'),
+    //         'coin_1' => $request->input('coin_1'),
+    //         'coin_10' => $request->input('coin_10'),
+    //         'coin_20' => $request->input('coin_20'),
+    //         'coin_50' => $request->input('coin_50'),
+    //         'coin_100' => $request->input('coin_100'),
+    //         'coin_200' => $request->input('coin_200'),
+    //         'open_close_id' => $open_close_id,
+    //         'money_shortage' => $request->money_shortage,
+    //     ]);
+    //     $userId = Auth::id();
+
+    //     return redirect()->route('reports.index' , $userId)->with('success', 'Day Closed Successfully!');
+    // }
 
 
 

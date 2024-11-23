@@ -23,6 +23,7 @@ class Transaction extends Model
         return $this->belongsTo(User::class , 'user_id');
     }
 
+
     public function openclose(){
         return $this->belongsTo(OpenClose::class , 'open_close_id');
     }
@@ -32,6 +33,11 @@ class Transaction extends Model
     }
     public function expenses(){
         return $this->hasMany(Expenses::class , 'transaction_id');
+    }
+    
+    public function coin()
+    {
+        return $this->hasOne(Coin::class, 'transaction_id');
     }
     
 }

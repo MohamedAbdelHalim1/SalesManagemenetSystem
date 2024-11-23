@@ -15,11 +15,12 @@ class Coin extends Model
         'coin_50',
         'coin_100',
         'coin_200',
-        'open_close_id',
+        'transaction_id',
         'money_shortage',
     ];
 
-    public function open_close(){
-        return $this->belongsTo(OpenClose::class , 'open_close_id');
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 }

@@ -67,6 +67,8 @@
                         @csrf
                         <!-- Hidden input to store the selected user_id -->
                         <input type="hidden" id="user_id" name="user_id">
+                        <input type="hidden" id="hidden_cash_equivalent" name="cash_equivalent" value="0">
+
 
                         <!-- Transaction Details -->
                         <div class="mb-4" style="display:flex;flex-direction:row;justify-content:space-between;width:100%;border-bottom:1px solid #ddd;padding:15px;">
@@ -96,7 +98,7 @@
                                 <div class="flex items-center space-x-2 mb-2">
                                     <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]">
                                     <span>-</span>
-                                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]">
+                                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]" required>
                                     <input type="file" class="form-input border rounded px-3" style="width:35%;" name="transfer_images[]">
                                     <button type="button" class="add-transfer-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
                                 </div>
@@ -111,20 +113,61 @@
                                 <div class="flex items-center space-x-2 mb-2">
                                     <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[]">
                                     <span>-</span>
-                                    <input type="number" class="form-input border rounded px-3" placeholder="Expense Value" style="width:45%;" name="expense_values[]">
+                                    <input type="number" class="form-input border rounded px-3" placeholder="Expense Value" style="width:45%;" name="expense_values[]" required>
                                     <button type="button" class="add-expense-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Coin Input Table -->
+                        <div class="mb-6">
+                            <table class="w-full border rounded text-center">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="py-2 px-4">200</th>
+                                        <th class="py-2 px-4">100</th>
+                                        <th class="py-2 px-4">50</th>
+                                        <th class="py-2 px-4">20</th>
+                                        <th class="py-2 px-4">10</th>
+                                        <th class="py-2 px-4">5</th>
+                                        <th class="py-2 px-4">1</th>
+                                        <th class="py-2 px-4">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="number" id="coin_200" name="coin_200" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td><input type="number" id="coin_100" name="coin_100" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td><input type="number" id="coin_50" name="coin_50" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td><input type="number" id="coin_20" name="coin_20" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td><input type="number" id="coin_10" name="coin_10" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td><input type="number" id="coin_5" name="coin_5" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td><input type="number" id="coin_1" name="coin_1" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;"></td>
+                                        <td>
+                                            <input type="number" id="coin_total" name="coin_total" class="form-input border rounded px-3 text-center" value="0" style="width: 80px;" readonly>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                         <!-- Submit Button and Cash Equivalent Calculation -->
                         <div class="flex justify-between items-center mb-6">
-                            <button type="submit" class="search text-white font-semibold px-4 py-2 rounded hover:bg-blue-700">Submit Transaction</button>
+                            <div class="flex items-center">
+                                <button type="submit" class="search text-white font-semibold px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50" disabled>
+                                    Submit Transaction
+                                </button>
+                                <div id="match-indicator" class="hidden ml-3 text-green-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                            </div>
                             <div class="text-right">
                                 <h2 class="text-lg font-semibold">Your cash should equal</h2>
                                 <input type="number" id="cash_equivalent" class="form-input border rounded px-3 transition-all duration-200 ease-in-out mt-2 text-center" style="width:150px;" name="total_cash" readonly>
                             </div>
-                        </div>
+                        </div>                        
                     </form>
 
                 </div>
@@ -166,6 +209,26 @@
             50% { background-color: #e0f7fa; }
             100% { background-color: #f0f0f0; }
         }
+
+        .btn-enabled-animation {
+            animation: highlight 1s ease-in-out infinite;
+        }
+
+        @keyframes highlight {
+            0% { background-color: #0d6efd; }
+            50% { background-color: #5cdb95; }
+            100% { background-color: #0d6efd; }
+        }
+
+        .fade-in {
+            animation: fade-in 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fade-in {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
     </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -178,18 +241,23 @@
             let transferTotal = 0;
             let expenseTotal = 0;
 
-            $('input[name^="transfer_values"]').each(function() {
+            $('input[name^="transfer_values"]').each(function () {
                 transferTotal += parseFloat($(this).val()) || 0;
             });
 
-            $('input[name="expense_values[]"]').each(function() {
+            $('input[name="expense_values[]"]').each(function () {
                 expenseTotal += parseFloat($(this).val()) || 0;
             });
 
             const cashEquivalent = remaining - transferTotal - expenseTotal;
             $('#cash_equivalent').val(cashEquivalent.toFixed(2)).addClass('blink');
+            $('#hidden_cash_equivalent').val(cashEquivalent.toFixed(2)); // Update hidden input field
             setTimeout(() => $('#cash_equivalent').removeClass('blink'), 500);
+
+            calculateCoinTotal(); // Trigger coin total check whenever cash equivalent is recalculated
         }
+
+
 
         $('#total, #commission').on('keyup', function() {
             const totalCollection = parseFloat($('#total').val()) || 0;
@@ -342,7 +410,42 @@
                 }
             });
         });
-    });
+
+        function calculateCoinTotal() {
+            const coin200 = parseInt($('#coin_200').val()) || 0;
+            const coin100 = parseInt($('#coin_100').val()) || 0;
+            const coin50 = parseInt($('#coin_50').val()) || 0;
+            const coin20 = parseInt($('#coin_20').val()) || 0;
+            const coin10 = parseInt($('#coin_10').val()) || 0;
+            const coin5 = parseInt($('#coin_5').val()) || 0;
+            const coin1 = parseInt($('#coin_1').val()) || 0;
+
+            const total =
+                coin200 * 200 +
+                coin100 * 100 +
+                coin50 * 50 +
+                coin20 * 20 +
+                coin10 * 10 +
+                coin5 * 5 +
+                coin1 * 1;
+
+            $('#coin_total').val(total);
+
+            const cashEquivalent = parseFloat($('#cash_equivalent').val()) || 0;
+
+            if (total === cashEquivalent) {
+                $('button[type="submit"]').prop('disabled', false).addClass('btn-enabled-animation');
+                $('#match-indicator').removeClass('hidden').addClass('fade-in');
+            } else {
+                $('button[type="submit"]').prop('disabled', true).removeClass('btn-enabled-animation');
+                $('#match-indicator').addClass('hidden').removeClass('fade-in');
+            }
+        }
+
+        // Trigger calculation on input changes
+        $('#coin_200, #coin_100, #coin_50, #coin_20, #coin_10, #coin_5, #coin_1, #cash_equivalent').on('keyup change', calculateCoinTotal);
+
+        });
 </script>
 
 </x-app-layout>

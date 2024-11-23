@@ -54,9 +54,9 @@
                                     <td>{{ $transaction->user->name }}</td>
                                     <td>{{ $transaction->order_number }}</td>
                                     <td>{{ $transaction->order_delivered }}</td>
-                                    <td>{{ $totalCollection }} LE</td>
-                                    <td>{{ $transaction->sales_commission }} LE</td>
-                                    <td>{{ $transaction->total_remaining }} LE</td>
+                                    <td>{{ $totalCollection ?? 0}} LE</td>
+                                    <td>{{ $transaction->sales_commission ?? 0}} LE</td>
+                                    <td>{{ $transaction->total_remaining ?? 0}} LE</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -174,6 +174,70 @@
                     </table>
                 </div>
 
+
+              <!-- Coins Section -->
+                <div class="section-wrapper coins-section">
+                    <div class="section-title">Coins Distribution</div>
+                    <table id="coinsTable">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Coin 200</th>
+                                <th>Coin 100</th>
+                                <th>Coin 50</th>
+                                <th>Coin 20</th>
+                                <th>Coin 10</th>
+                                <th>Coin 5</th>
+                                <th>Coin 1</th>
+                                <th>Total Coins Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $totalCoinsSum = 0; @endphp
+                            @foreach($openClose->transactions as $transaction)
+                                @if ($transaction->coin)
+                                    @php
+                                        $coin = $transaction->coin;
+                                        $totalCoinsValue =
+                                            ($coin->coin_200 * 200) +
+                                            ($coin->coin_100 * 100) +
+                                            ($coin->coin_50 * 50) +
+                                            ($coin->coin_20 * 20) +
+                                            ($coin->coin_10 * 10) +
+                                            ($coin->coin_5 * 5) +
+                                            ($coin->coin_1 * 1);
+                                        $totalCoinsSum += $totalCoinsValue;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $transaction->id }}</td>
+                                        <td>{{ $coin->coin_200 ?? 0}}</td>
+                                        <td>{{ $coin->coin_100 ?? 0}}</td>
+                                        <td>{{ $coin->coin_50 ?? 0}}</td>
+                                        <td>{{ $coin->coin_20 ?? 0}}</td>
+                                        <td>{{ $coin->coin_10 ?? 0}}</td>
+                                        <td>{{ $coin->coin_5 ?? 0}}</td>
+                                        <td>{{ $coin->coin_1 ?? 0}}</td>
+                                        <td>{{ $totalCoinsValue }} LE</td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td>{{ $transaction->id }}</td>
+                                        <td colspan="8">No coin data available for this transaction.</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="8" class="text-right font-bold">Total Coins Value:</td>
+                                <td class="font-bold">{{ $totalCoinsSum }} LE</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+
+
                 <!-- Final Calculation -->
                 <div class="mt-8 text-right" style="float: left;">
                     <h4 class="font-semibold text-xl inline-flex items-center">
@@ -248,6 +312,12 @@
             margin-bottom: 10px;
             color: #333;
         }
+
+        .coins-section {
+            background-color: #eef7fa;
+            border-left: 4px solid #17a2b8;
+        }
+
 
           /* Tooltip styling */
     .tooltip-container {
@@ -324,6 +394,11 @@
                 info: false
             });
             $('#expensesTable').DataTable({
+                searching: false,
+                paging: false,
+                info: false
+            });
+            $('#coinsTable').DataTable({
                 searching: false,
                 paging: false,
                 info: false

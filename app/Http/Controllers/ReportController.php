@@ -16,7 +16,7 @@ class ReportController extends Controller
         
         // Retrieve all open_close records for the authenticated user
         $openCloses = OpenClose::where('user_id', $userId)
-            ->with(['transactions','coin']) // Load the related transactions
+            ->with(['transactions']) // Load the related transactions
             ->orderBy('created_at','desc')
             ->get();
             
@@ -25,25 +25,41 @@ class ReportController extends Controller
 
     public function show($id)
     {
-        // Retrieve the open_close record with related transactions, transfers, expenses, and coin by ID
-        $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses', 'coin'])
-            ->findOrFail($id);
+        // Fetch openClose record with transactions, transfers, expenses, and coin
+        $openClose = OpenClose::with(['transactions.transfers', 'transactions.expenses', 'transactions.coin'])->findOrFail($id);
     
-        // Retrieve general expenses related to the openClose transactions
-        $accountingExpenses = [];
+        // Initialize totals
+        $totalTransferValueSum = 0;
+        $totalExpenseValueSum = 0;
+        $totalMyExpenseValueSum = 0;
+    
         $generalExpenses = [];
+        $accountingExpenses = [];
     
         foreach ($openClose->transactions as $transaction) {
+            foreach ($transaction->transfers as $transfer) {
+                $totalTransferValueSum += $transfer->transfer_value;
+            }
+    
             foreach ($transaction->expenses as $expense) {
                 if ($expense->transaction->user->role_id == 2) {
                     $accountingExpenses[] = $expense;
+                    $totalMyExpenseValueSum += $expense->expenses_value;
                 } else {
                     $generalExpenses[] = $expense;
+                    $totalExpenseValueSum += $expense->expenses_value;
                 }
             }
         }
-
-        return view('reports.show', compact('openClose', 'generalExpenses' , 'accountingExpenses'));
+    
+        return view('reports.show', compact(
+            'openClose',
+            'generalExpenses',
+            'accountingExpenses',
+            'totalTransferValueSum',
+            'totalExpenseValueSum',
+            'totalMyExpenseValueSum'
+        ));
     }
     
 

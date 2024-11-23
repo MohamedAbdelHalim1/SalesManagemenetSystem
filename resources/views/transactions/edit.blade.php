@@ -86,6 +86,42 @@
                         <button type="button" class="add-expense-btn bg-gray-500 text-white font-semibold px-2 rounded hover:bg-blue-700">+ Add Expense</button>
                     </div>
 
+                      <!-- Coin Distribution Section -->
+                      <div class="mb-4" style="border-bottom:1px solid #ddd; padding:15px;">
+                        <label for="coins" class="block font-semibold mb-2">Coin Distribution</label>
+                        <div class="grid grid-cols-4 gap-4" style="display: flex;">
+                            <div>
+                                <label for="coin_200" class="block">Coin 200</label>
+                                <input type="number" name="coin_200" id="coin_200" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_200 ?? 0 }}" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label for="coin_100" class="block">Coin 100</label>
+                                <input type="number" name="coin_100" id="coin_100" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_100 ?? 0 }}" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label for="coin_50" class="block">Coin 50</label>
+                                <input type="number" name="coin_50" id="coin_50" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_50 ?? 0 }}" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label for="coin_20" class="block">Coin 20</label>
+                                <input type="number" name="coin_20" id="coin_20" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_20 ?? 0 }}" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label for="coin_10" class="block">Coin 10</label>
+                                <input type="number" name="coin_10" id="coin_10" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_10 ?? 0 }}" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label for="coin_5" class="block">Coin 5</label>
+                                <input type="number" name="coin_5" id="coin_5" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_5 ?? 0 }}" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label for="coin_1" class="block">Coin 1</label>
+                                <input type="number" name="coin_1" id="coin_1" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_1 ?? 0 }}" style="width: 80px;">
+                            </div>
+                        </div>
+                    </div>
+
+
                     <!-- Cash Equivalent Display -->
                     <div class="flex justify-between items-center mb-6">
                         <button type="button" id="updateTransactionBtn" class="bg-gray-500 text-white px-4 py-2 rounded">Save Changes</button>
