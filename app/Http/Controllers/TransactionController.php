@@ -39,21 +39,42 @@ class TransactionController extends Controller
         return view('transactions.create-expenses');
     }
 
-    public function closeDay(Request $request , $open_close_id)
+    public function closeDay(Request $request, $open_close_id)
     {
         $total_cash = $request->total_cash;
-        // Get the last OpenClose record for the authenticated user
+    
+        // Fetch the current OpenClose record
         $lastOpenClose = OpenClose::find($open_close_id);
-
+    
         if ($lastOpenClose && is_null($lastOpenClose->close_at)) {
-            // Update the close_at timestamp to close the day
-            $lastOpenClose->update(['close_at' => Carbon::now()]);
-
-            // Redirect to the profile page
-        return redirect()->route('transactions.coins', ['open_close_id' => $open_close_id , 'total_cash'=>$total_cash]);
+            // Flag the record for closing but don't update close_at yet
+            $lastOpenClose->update(['pending_close' => true]);
+    
+            // Redirect to the validation page
+            return redirect()->route('transactions.coins', [
+                'open_close_id' => $open_close_id,
+                'total_cash' => $total_cash
+            ]);
+        }
+    
+        return back()->withErrors('Unable to close the day.');
     }
 
-        return back()->withErrors('Unable to close the day.');
+    public function finalizeClose(Request $request, $open_close_id)
+    {
+        $lastOpenClose = OpenClose::find($open_close_id);
+
+        if ($lastOpenClose && $lastOpenClose->pending_close) {
+            // Set the close_at timestamp to mark the day as closed
+            $lastOpenClose->update([
+                'close_at' => Carbon::now(),
+                'pending_close' => false // Clear the pending_close flag
+            ]);
+
+            return redirect()->route('transaction.index')->with('success', 'Day closed successfully.');
+        }
+
+        return back()->withErrors('Unable to finalize the close.');
     }
 
 

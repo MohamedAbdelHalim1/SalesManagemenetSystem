@@ -10,7 +10,8 @@ class OpenClose extends Model
     protected $fillable = [
         'user_id',
         'open_at',
-        'close_at'
+        'close_at',
+        'pending_close'
     ];
 
     protected $table = 'open_closes';

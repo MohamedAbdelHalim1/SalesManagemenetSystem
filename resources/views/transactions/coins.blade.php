@@ -55,10 +55,13 @@
                             <input type="text" id="money_shortage" name="money_shortage" class="form-input border rounded px-3" readonly value="{{ $moneyShortage }}" />
                         </div>
 
-                        <!-- Done Button (Hidden Initially) -->
                         <div id="doneButtonContainer" class="mt-6 hidden">
-                            <a href="{{ route('transaction.index') }}" id="doneButton" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Done</a>
-                        </div>
+                            <form method="POST" action="{{ route('transactions.finalizeClose', $open_close_id) }}">
+                                @csrf
+                                <input type="hidden" name="total_cash" value="{{ $total_cash }}">
+                                <button type="submit" id="doneButton" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">Done</button>
+                            </form>
+                        </div>                        
                     </div>
                 </div>
             </div>
@@ -68,32 +71,26 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Function to validate all rows
             function validateAllRows() {
                 let allValid = true;
 
                 $('#coinsValidationTable tbody tr').each(function () {
-                    const enteredValue = parseInt($(this).find('.validate-input').val()) || 0; // Get entered value
-                    const dbValue = parseInt($(this).find('.validate-input').data('db-count')); // Get DB value
+                    const enteredValue = parseInt($(this).find('.validate-input').val()) || 0;
+                    const dbValue = parseInt($(this).find('.validate-input').data('db-count'));
 
                     const validationStatusCell = $(this).find('.validation-status');
 
-                    // Check for matching values
                     if (enteredValue === dbValue) {
-                        validationStatusCell.text('✅ Matching')
-                            .removeClass('text-gray-500')
-                            .addClass('text-gray-500');
-                        $(this).css('background-color', '#d3d3d3'); // Set background to gray
+                        validationStatusCell.text('✅ Matching').addClass('text-green-500').removeClass('text-red-500');
+                        $(this).css('background-color', '#d3d3d3');
                     } else {
-                        validationStatusCell.text('❌ Mismatch')
-                            .removeClass('text-gray-500')
-                            .addClass('text-gray-500');
-                        $(this).css('background-color', ''); // Reset background
-                        allValid = false; // Mark as invalid
+                        validationStatusCell.text('❌ Mismatch').addClass('text-red-500').removeClass('text-green-500');
+                        $(this).css('background-color', '');
+                        allValid = false;
                     }
                 });
 
-                // Show/hide "Done" button
+                // Enable/Disable the "Done" button
                 if (allValid) {
                     $('#doneButtonContainer').removeClass('hidden');
                 } else {
@@ -101,13 +98,11 @@
                 }
             }
 
-            // Trigger validation on keyup
-            $('.validate-input').on('keyup', function () {
-                validateAllRows(); // Revalidate all rows
-            });
+            $('.validate-input').on('keyup', validateAllRows);
 
-            // Initial validation check
+            // Perform validation on page load
             validateAllRows();
         });
+
     </script>
 </x-app-layout>

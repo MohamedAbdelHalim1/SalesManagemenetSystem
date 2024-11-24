@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/{open_close_id}/coins/{total_cash}', [TransactionController::class, 'coins'])->name('transactions.coins');
     Route::post('/transactions/{open_close_id}/coins', [TransactionController::class, 'storeCoins'])->name('transactions.storeCoins');
     Route::post('/transactions/close-day/{open_close_id}', [TransactionController::class, 'closeDay'])->name('transactions.closeDay');
+    Route::post('/transactions/finalize-close/{open_close_id}', [TransactionController::class, 'finalizeClose'])->name('transactions.finalizeClose');
+
     Route::get('/transactions/{id}/show', [TransactionController::class, 'show'])->name('transactions.show');
     Route::get('/expenses/create', [TransactionController::class, 'createExpenses'])->name('expenses.create');
 
