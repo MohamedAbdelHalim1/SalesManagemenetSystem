@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('coins', function (Blueprint $table) {
             $table->id();
-            $table->integer('coin_0_5')->default(0);  
+            $table->integer('coin_5')->default(0);  
             $table->integer('coin_1')->default(0);    
             $table->integer('coin_10')->default(0);   
             $table->integer('coin_20')->default(0);   

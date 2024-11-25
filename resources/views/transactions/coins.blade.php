@@ -31,6 +31,7 @@
                                             '50 LE' => $totalCoins['coin_50'] ?? 0,
                                             '20 LE' => $totalCoins['coin_20'] ?? 0,
                                             '10 LE' => $totalCoins['coin_10'] ?? 0,
+                                            '5 LE' => $totalCoins['coin_5'] ?? 0,
                                             '1 LE' => $totalCoins['coin_1'] ?? 0,
                                         ];
                                     @endphp
