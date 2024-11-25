@@ -424,6 +424,7 @@ class TransactionController extends Controller
             'coin_50' => 0,
             'coin_20' => 0,
             'coin_10' => 0,
+            'coin_5' => 0,
             'coin_1' => 0,
         ];
 
@@ -434,12 +435,13 @@ class TransactionController extends Controller
                 $totalCoins['coin_50'] += $transaction->coin->coin_50;
                 $totalCoins['coin_20'] += $transaction->coin->coin_20;
                 $totalCoins['coin_10'] += $transaction->coin->coin_10;
+                $totalCoins['coin_5'] += $transaction->coin->coin_5;
                 $totalCoins['coin_1'] += $transaction->coin->coin_1;
             }
         }
 
         $totalCash = $openClose->transactions->sum('total_cash');
-        $totalCoinsValue = array_sum(array_map(fn($count, $value) => $count * $value, $totalCoins, [200, 100, 50, 20, 10, 1]));
+        $totalCoinsValue = array_sum(array_map(fn($count, $value) => $count * $value, $totalCoins, [200, 100, 50, 20, 10, 5, 1]));
         $moneyShortage = $totalCash - $totalCoinsValue;
 
         return view('transactions.coins', [
