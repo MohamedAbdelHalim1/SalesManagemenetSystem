@@ -96,7 +96,7 @@
                             <label for="transfers" class="block font-semibold mb-2">Any Transfers...?</label>
                             <div id="transfer_fields">
                                 <div class="flex items-center space-x-2 mb-2">
-                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]">
+                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]" required>
                                     <span>-</span>
                                     <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]" required>
                                     <input type="file" class="form-input border rounded px-3" style="width:35%;" name="transfer_images[]">
@@ -111,7 +111,7 @@
                             <label for="expenses" class="block font-semibold mb-2">Any Expenses...?</label>
                             <div id="expense_fields">
                                 <div class="flex items-center space-x-2 mb-2">
-                                    <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[]">
+                                    <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[]" required>
                                     <span>-</span>
                                     <input type="number" class="form-input border rounded px-3" placeholder="Expense Value" style="width:45%;" name="expense_values[]" required>
                                     <button type="button" class="add-expense-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
@@ -278,9 +278,9 @@
         $('#transfer_fields').on('click', '.add-transfer-btn', function() {
             const transferHtml = `
                 <div class="flex items-center space-x-2 mb-2">
-                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]">
+                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]" required>
                     <span>-</span>
-                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]">
+                    <input type="number" class="form-input border rounded px-3" placeholder="Transfer Value" style="width:20%;" name="transfer_values[]" required>
                     <input type="file" class="form-input border rounded px-3" style="width:35%;" style="width:35%;" name="transfer_images[]">
                     <button type="button" class="add-transfer-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
                 </div>`;
@@ -292,9 +292,9 @@
         $('#expense_fields').on('click', '.add-expense-btn', function() {
             const expenseHtml = `
                 <div class="flex items-center space-x-2 mb-2">
-                    <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[]">
+                    <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[]" required>
                     <span>-</span>
-                    <input type="number" class="form-input border rounded px-3" placeholder="Expense Value" style="width:45%;" name="expense_values[]">
+                    <input type="number" class="form-input border rounded px-3" placeholder="Expense Value" style="width:45%;" name="expense_values[]" required>
                     <button type="button" class="add-expense-btn text-white font-semibold px-2 rounded hover:bg-blue-700">+</button>
                 </div>`;
             $('#expense_fields').append(expenseHtml);

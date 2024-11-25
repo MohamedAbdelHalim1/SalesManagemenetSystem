@@ -51,9 +51,9 @@
                             @foreach($transaction->transfers as $transfer)
                                 <div class="flex items-center space-x-2 mb-4 transfer-row">
                                     <input type="hidden" name="transfer_ids[]" value="{{ $transfer->id }}">
-                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:20%;" name="transfer_keys[{{ $transfer->id }}]" value="{{ $transfer->transfer_key }}">
+                                    <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:20%;" name="transfer_keys[{{ $transfer->id }}]" value="{{ $transfer->transfer_key }}" required>
                                     <span>-</span>
-                                    <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:15%;" name="transfer_values[{{ $transfer->id }}]" value="{{ $transfer->transfer_value }}">
+                                    <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:15%;" name="transfer_values[{{ $transfer->id }}]" value="{{ $transfer->transfer_value }}" required>
                                     @if($transfer->image)
                                         <a href="{{ asset($transfer->image) }}" target="_blank">
                                             <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-16 h-16 object-cover">
@@ -75,9 +75,9 @@
                             @foreach($transaction->expenses as $expense)
                                 <div class="flex items-center space-x-2 mb-2 expense-row">
                                     <input type="hidden" name="expense_ids[]" value="{{ $expense->id }}">
-                                    <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[{{ $expense->id }}]" value="{{ $expense->expenses_key }}">
+                                    <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[{{ $expense->id }}]" value="{{ $expense->expenses_key }}" required>
                                     <span>-</span>
-                                    <input type="number" class="form-input border rounded px-3 expense-value" placeholder="Expense Value" style="width:45%;" name="expense_values[{{ $expense->id }}]" value="{{ $expense->expenses_value }}">
+                                    <input type="number" class="form-input border rounded px-3 expense-value" placeholder="Expense Value" style="width:45%;" name="expense_values[{{ $expense->id }}]" value="{{ $expense->expenses_value }}" required>
                                     <button type="button" class="bg-gray-500 remove-expense-btn text-red-500 font-semibold px-2 rounded" data-id="{{ $expense->id }}">-</button>
                                 </div>
                             @endforeach
@@ -186,9 +186,9 @@
             $('.add-transfer-btn').on('click', function() {
                 const transferHtml = `
                     <div class="flex items-center space-x-2 mb-2 transfer-row">
-                        <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:20%;" name="new_transfer_keys[]">
+                        <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:20%;" name="new_transfer_keys[]" required>
                         <span>-</span>
-                        <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:15%;" name="new_transfer_values[]">
+                        <input type="number" class="form-input border rounded px-3 transfer-value" placeholder="Transfer Value" style="width:15%;" name="new_transfer_values[]" required>
                         <input type="file" class="form-input border rounded px-3" style="width:35%;" name="new_transfer_images[]">
                         <button type="button" class="bg-gray-500 remove-transfer-btn text-red-500 font-semibold px-2 rounded">-</button>
                     </div>`;
@@ -199,9 +199,9 @@
             $('.add-expense-btn').on('click', function() {
                 const expenseHtml = `
                     <div class="flex items-center space-x-2 mb-2 expense-row">
-                        <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="new_expense_keys[]">
+                        <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="new_expense_keys[]" required>
                         <span>-</span>
-                        <input type="number" class="form-input border rounded px-3 expense-value" placeholder="Expense Value" style="width:45%;" name="new_expense_values[]">
+                        <input type="number" class="form-input border rounded px-3 expense-value" placeholder="Expense Value" style="width:45%;" name="new_expense_values[]" required>
                         <button type="button" class="bg-gray-500 remove-expense-btn text-red-500 font-semibold px-2 rounded">-</button>
                     </div>`;
                 $('#expense_fields').append(expenseHtml);

@@ -80,11 +80,12 @@ class TransactionController extends Controller
 
     public function show($id)
     {
+        $userId = Auth::id();
         $openClose = OpenClose::with([
             'transactions.transfers',
             'transactions.expenses',
             'transactions.coin',
-        ])->findOrFail($id);
+        ])->where('user_id' , $userId)->findOrFail($id);
     
         $totalcashforclose = 0;
     

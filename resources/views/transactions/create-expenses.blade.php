@@ -22,9 +22,9 @@
 
                     <div id="expense_fields">
                         <div class="flex items-center mb-4">
-                            <input type="text" class="form-input border rounded px-3" name="expense_keys[]" placeholder="Expense Name" style="width:45%;">
+                            <input type="text" class="form-input border rounded px-3" name="expense_keys[]" placeholder="Expense Name" style="width:45%;" required>
                             <span class="mx-2">-</span>
-                            <input type="number" class="form-input border rounded px-3" name="expense_values[]" placeholder="Expense Value" style="width:45%;">
+                            <input type="number" class="form-input border rounded px-3" name="expense_values[]" placeholder="Expense Value" style="width:45%;" required>
                         </div>
                     </div>
                     <button type="button" class="add-expense-btn bg-gray-500 text-white px-4 py-2 rounded">+ Add Expense</button>
@@ -69,9 +69,9 @@
             $('.add-expense-btn').on('click', function () {
                 $('#expense_fields').append(`
                     <div class="flex items-center mb-4">
-                        <input type="text" class="form-input border rounded px-3" name="expense_keys[]" placeholder="Expense Name" style="width:45%;">
+                        <input type="text" class="form-input border rounded px-3" name="expense_keys[]" placeholder="Expense Name" style="width:45%;" required>
                         <span class="mx-2">-</span>
-                        <input type="number" class="form-input border rounded px-3" name="expense_values[]" placeholder="Expense Value" style="width:45%;">
+                        <input type="number" class="form-input border rounded px-3" name="expense_values[]" placeholder="Expense Value" style="width:45%;" required>
                     </div>
                 `);
             });
