@@ -8,7 +8,7 @@ use App\Models\OpenClose; // Import the OpenClose model
 class Coin extends Model
 {
     protected $fillable = [
-        'coin_0_5',
+        'coin_5',
         'coin_1',
         'coin_10',
         'coin_20',

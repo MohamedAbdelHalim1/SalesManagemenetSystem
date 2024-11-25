@@ -118,6 +118,10 @@
                                 <label for="coin_1" class="block">Coin 1</label>
                                 <input type="number" name="coin_1" id="coin_1" class="form-input border rounded px-3" value="{{ $transaction->coin->coin_1 ?? 0 }}" style="width: 80px;">
                             </div>
+                            <div>
+                                <label for="coin_total" class="block">Coin Total</label>
+                                <input type="number" id="coin_total" class="form-input border rounded px-3" readonly style="width: 80px;">
+                              </div>
                         </div>
                     </div>
 
@@ -228,7 +232,41 @@
                 });
             });
 
+            function calculateCoinTotal() {
+                const coin200 = parseInt($('#coin_200').val()) || 0;
+                const coin100 = parseInt($('#coin_100').val()) || 0;
+                const coin50 = parseInt($('#coin_50').val()) || 0;
+                const coin20 = parseInt($('#coin_20').val()) || 0;
+                const coin10 = parseInt($('#coin_10').val()) || 0;
+                const coin5 = parseInt($('#coin_5').val()) || 0;
+                const coin1 = parseInt($('#coin_1').val()) || 0;
+
+                const total =
+                coin200 * 200 +
+                coin100 * 100 +
+                coin50 * 50 +
+                coin20 * 20 +
+                coin10 * 10 +
+                coin5 * 5 +
+                coin1 * 1;
+
+                $('#coin_total').val(total);
+
+                const cashEquivalent = parseFloat($('#cash_equivalent').val()) || 0;
+
+                if (total === cashEquivalent) {
+                $('button[type="submit"]').prop('disabled', false).addClass('btn-enabled-animation');
+                $('#match-indicator').removeClass('hidden').addClass('fade-in');
+                } else {
+                $('button[type="submit"]').prop('disabled', true).removeClass('btn-enabled-animation');
+                $('#match-indicator').addClass('hidden').removeClass('fade-in');
+                }
+            }
+
+            $('#coin_200, #coin_100, #coin_50, #coin_20, #coin_10, #coin_5, #coin_1, #cash_equivalent').on('keyup change', calculateCoinTotal);
+
             // Initial calculation
+            calculateCoinTotal();
             calculateRemainingAndCashEquivalent();
         });
     </script>
