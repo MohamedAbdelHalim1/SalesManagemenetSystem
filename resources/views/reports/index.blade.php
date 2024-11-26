@@ -30,7 +30,7 @@
                 <table class="w-full border rounded" id="reportsTable">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="py-2 px-4">Report Number</th>
+                            <th class="py-2 px-4">Day Reference</th>
                             <th class="py-2 px-4">Opened At</th>
                             <th class="py-2 px-4">Closed At</th>
                             <th class="py-2 px-4">Total Cash</th>
@@ -59,7 +59,7 @@
                             @endphp
                             
                             <tr class="border-t report-row">
-                                <td class="py-2 px-4 text-center">{{ $loop->iteration }}</td>
+                                <td class="py-2 px-4 text-center">{{ $openClose->id }}</td>
                                 <td class="py-2 px-4 text-center open-date">{{ $openClose->open_at }}</td>
                                 <td class="py-2 px-4 text-center close-date">{{ $openClose->close_at ?? 'Open' }}</td>
                                 <td class="py-2 px-4 text-center open-date">{{ $total_cash }}</td>
@@ -114,7 +114,20 @@
 
     </style>
     <!-- JavaScript to Filter by Date Range -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script>
+        $(document).ready(function () {
+            $('#reportsTable').DataTable({
+                "pageLength": 10,
+                "ordering": true,
+                "searching": true,
+                "columnDefs": [
+                    { "searchable": true, "targets": [0] } // Disable searching for ID, Role, and Actions columns
+                ],
+            });
+        });
         document.getElementById('filterBtn').addEventListener('click', function() {
             const openDay = document.getElementById('openDay').value;
             const closeDay = document.getElementById('closeDay').value;

@@ -19,6 +19,7 @@
                     <table id="transactionsTable" class="min-w-full bg-white">
                         <thead>
                             <tr>
+                                <th class="py-2 px-4 border-b">Day Reference</th>
                                 <th class="py-2 px-4 border-b">Open Date</th>
                                 <th class="py-2 px-4 border-b">Close Date</th>
                                 <th class="py-2 px-4 border-b">Transaction Count</th>
@@ -28,6 +29,7 @@
                         <tbody>
                             @foreach($openCloseRecords as $record)
                                 <tr>
+                                    <td class="py-2 px-4 border-b text-center">{{ $record->id }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->open_at }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->close_at ?? 'Open' }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->transactions->count() }}</td>
@@ -84,7 +86,14 @@
 
     <script>
         $(document).ready(function () {
-            $('#transactionsTable').DataTable();
+            $('#transactionsTable').DataTable({
+                "pageLength": 10,
+                "ordering": true,
+                "searching": true,
+                "columnDefs": [
+                    { "searchable": true, "targets": [0] } // Disable searching for ID, Role, and Actions columns
+                ],
+            });
         });
 
         function openModal(recordId) {
