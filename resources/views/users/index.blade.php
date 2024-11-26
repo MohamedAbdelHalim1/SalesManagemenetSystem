@@ -196,13 +196,19 @@
                         const rows = csvData.split('\n');
 
                         const users = rows.slice(1).map(row => {
-                            const columns = row.split(',');
-                            if (columns.length < 4 || columns.some(col => col.trim() === '')) {
-                                return null; // Skip invalid rows
-                            }
-                            const [name, email, password, role_id] = columns;
-                            return { name: name.trim(), email: email.trim(), password: password.trim(), role_id: role_id.trim() };
-                        }).filter(user => user !== null);
+                        const columns = row.split(',');
+                        if (columns.length < 4 || columns.some(col => col.trim() === '')) {
+                            return null; // Skip invalid rows
+                        }
+                        const [name, email, password, role_id] = columns;
+                        return { 
+                            name: name.trim(), 
+                            email: email.trim(), 
+                            password: password.trim(), 
+                            role_id: role_id.trim() 
+                        };
+                    }).filter(user => user !== null);
+
 
                         if (users.length === 0) {
                             alert('No valid users found in the file.');
@@ -210,27 +216,37 @@
                         }
 
                         // Fetch API to send data to server
-                        fetch('{{ route('users.store') }}', {
+                        fetch('{{ route('users.store-bulk') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             },
-                            body: JSON.stringify(users),
+                            body: JSON.stringify({ users }),
                         })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert('Users imported successfully.');
-                                    window.location.reload();
-                                } else {
-                                    alert('Error importing users: ' + data.message);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred while importing users.');
-                            });
+                        .then(response => {
+                            if (!response.ok) {
+                                // Parse and log the error response if it's JSON
+                                return response.text().then(text => {
+                                    console.error('Server Error:', text);
+                                    throw new Error('Error importing users: ' + text);
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                alert('Users imported successfully.');
+                                window.location.reload();
+                            } else {
+                                alert('Error importing users: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred: ' + error.message);
+                        });
+
 
                         hideModal();
                     };

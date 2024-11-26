@@ -42,10 +42,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $totalCashSum = 0; @endphp
+                            @php 
+                            $totalCashSum = 0;
+                            $totalCollectionSum=0; 
+                            $totalCommissionSum = 0; 
+                            @endphp
                             @foreach($openClose->transactions as $transaction)
                                 @php
                                     $totalCashSum += $transaction->total_remaining;
+                                    $totalCollectionSum += $transaction->total_remaining + $transaction->sales_commission;
+                                    $totalCommissionSum += $transaction->sales_commission;
+
                                     $totalCollection = $transaction->total_remaining + $transaction->sales_commission;
                                 @endphp
                                 <tr>
@@ -62,7 +69,9 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="7" class="text-right font-bold">Total Cash:</td>
+                                <td colspan="5" class="text-right font-bold">Total Cash:</td>
+                                <td class="font-bold">{{ $totalCollectionSum }} LE</td>
+                                <td class="font-bold">{{ $totalCommissionSum }} LE</td>
                                 <td class="font-bold">{{ $totalCashSum }} LE</td>
                             </tr>
                         </tfoot>

@@ -16,7 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/users', [UserController::class, 'users'])->name('user.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::post('users/store-single', [UserController::class, 'storeSingle'])->name('users.store-single');
+    Route::post('users/store-bulk', [UserController::class, 'storeBulk'])->name('users.store-bulk'); 
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
