@@ -48,8 +48,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/{userId}', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/show/{id}', [ReportController::class, 'show'])->name('reports.show');
     Route::post('/reports/{id}/reopen', [ReportController::class, 'reopen'])->name('reports.reopen');
-
     Route::get('/reports/sales/{userId}', [ReportController::class, 'salesReport'])->name('reports.sales');
+
+    Route::get('/general-reports', [ReportController::class, 'general_report'])->name('general.report');
+    Route::get('/general-report/transactions/{transaction}', [ReportController::class, 'general_transaction_show'])->name('general.transactions.show');
+    Route::get('/general-report/transfers/{transaction}', [ReportController::class, 'general_tranfer_show'])->name('general.transfers.show');
+    Route::get('/general-report/expenses/{transaction}', [ReportController::class, 'general_expenses_show'])->name('general.expenses.show');
+    Route::get('/special-reports', [ReportController::class, 'special_report'])->name('special.report');
+
+    
 });
 
 require __DIR__.'/auth.php';
