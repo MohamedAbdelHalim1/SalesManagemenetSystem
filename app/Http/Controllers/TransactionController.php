@@ -20,15 +20,28 @@ class TransactionController extends Controller
         // Get the last OpenClose record for the authenticated user
         $lastOpenClose = OpenClose::where('user_id', $userId)->latest()->first();
     
-        if ($lastOpenClose && is_null($lastOpenClose->close_at)) {
+        if ($lastOpenClose && is_null($lastOpenClose->close_at)  && Auth::user()->role_id != 4) {
             // Retrieve OpenClose records and load related transactions
             $openCloseRecords = OpenClose::with('transactions')->where('user_id', $userId)->get();
     
             return view('transactions.index', compact('openCloseRecords', 'lastOpenClose'));
-        } else {
+        } elseif(Auth::user()->role_id == 4){
+            $openCloseRecords = OpenClose::with('transactions')->get();
+            return view('transactions.reviewer' , compact('openCloseRecords'));
+        }else {
             // Show the modal to confirm opening a new transaction day
             return view('transactions.confirm_open');
         }
+        
+    }
+
+    public function updateDone(Request $request, $id)
+    {
+        $openClose = OpenClose::findOrFail($id);
+        $openClose->is_done = $request->input('is_done');
+        $openClose->save();
+
+        return response()->json(['message' => 'Record updated successfully.']);
     }
     
     public function create(){

@@ -27,7 +27,9 @@
                     <x-nav-link :href="route('transaction.index')" :active="request()->routeIs('transaction.index')">
                         {{ __('Transactions') }}
                     </x-nav-link>
-                    
+                    @endif
+                    @if (auth()->user()->role_id != 1 && auth()->user()->role_id != 4)
+
                     <x-nav-link :href="route('reports.index', ['userId' => auth()->id()])" :active="request()->routeIs('reports.index')">
                         {{ __('Reports') }}
                     </x-nav-link>

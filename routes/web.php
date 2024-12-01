@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/transactions/{id}/show', [TransactionController::class, 'show'])->name('transactions.show');
     Route::get('/expenses/create', [TransactionController::class, 'createExpenses'])->name('expenses.create');
+    Route::post('/open-closes/{id}/update-done', [TransactionController::class, 'updateDone'])->name('opencloses.updateDone');
 
     Route::get('/reports/{userId}', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/show/{id}', [ReportController::class, 'show'])->name('reports.show');

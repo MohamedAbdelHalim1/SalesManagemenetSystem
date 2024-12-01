@@ -58,7 +58,7 @@
                             <th class="py-2 px-4">Total Cash</th>
                             <th class="py-2 px-4">Total Transfers</th>
                             <th class="py-2 px-4">Total Expenses</th>
-
+                            <th class="py-2 px-4">Is Reviwed</th>
                             <th class="py-2 px-4">Action</th>
                         </tr>
                     </thead>
@@ -91,7 +91,7 @@
                                 <td class="py-2 px-4 text-center open-date">{{ $total_cash }}</td>
                                 <td class="py-2 px-4 text-center open-date">{{ $total_transfer }}</td>
                                 <td class="py-2 px-4 text-center open-date">{{ $total_expenses }}</td>
-
+                                <td class="py-2 px-4 text-center open-date">{{ $openClose->is_done ? 'Yes' : 'No' }}</td>
                                 <td class="py-2 px-4 text-center" style="display: flex;">
                                     <a href="{{ route('reports.show', $openClose->id) }}" class="btn-same-size">
                                         Show
