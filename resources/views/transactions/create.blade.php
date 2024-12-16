@@ -14,7 +14,7 @@
                 <div class="container mx-auto" style="padding:15px;">
                     <!-- User Search Section -->
                     <div class="mb-4">
-                        <label for="user_search" class="block font-semibold mb-2">Search by User Name</label>
+                        <label for="user_search" class="block font-semibold mb-2">Search by User Name - أسم المندوب</label>
                         <div class="flex gap-2">
                             <input type="text" class="search-input w-full border rounded px-3 py-2" id="user_search_value" placeholder="Enter User Name">
                         </div>
@@ -73,19 +73,19 @@
                         <!-- Transaction Details -->
                         <div class="mb-4" style="display:flex;flex-direction:row;justify-content:space-between;width:100%;border-bottom:1px solid #ddd;padding:15px;">
                             <div style="display:flex;flex-direction:column;width:100%;">
-                                <label for="reference_collection" class="block font-semibold mb-2">Reference Collection</label>
+                                <label for="reference_collection" class="block font-semibold mb-2">Reference Collection - عمليه التحصيل</label>
                                 <input type="number" class="form-input border rounded px-3" id="reference_collection" name="reference_collection" placeholder="Enter Reference Collection" style="width:50%;">
-                                <label for="order_number" class="block font-semibold mb-2">Number Of Orders</label>
+                                <label for="order_number" class="block font-semibold mb-2">Number Of Orders - عدد الاوردرات</label>
                                 <input type="number" class="form-input border rounded px-3" id="order_number" name="order_number" placeholder="Enter Number Of Orders" style="width:50%;">
-                                <label for="order_delivered" class="block font-semibold mb-2">Orders Delivered</label>
+                                <label for="order_delivered" class="block font-semibold mb-2">Orders Delivered - تم التسليم</label>
                                 <input type="number" class="form-input border rounded px-3" id="order_delivered" name="order_delivered" placeholder="Enter Orders Delivered" style="width:50%;">
                             </div>
                             <div style="display:flex;flex-direction:column;width:100%;">
-                                <label for="total" class="block font-semibold mb-2">Total Collection</label>
+                                <label for="total" class="block font-semibold mb-2">Total Collection - اجمالي التحصيل</label>
                                 <input type="number" class="form-input border rounded px-3" id="total" name="total_collection" placeholder="Enter Total Collection" style="width:50%;">
-                                <label for="commission" class="block font-semibold mb-2">Commission Value</label>
+                                <label for="commission" class="block font-semibold mb-2">Commission Value - عمولة المندوب</label>
                                 <input type="number" class="form-input border rounded px-3" id="commission" name="commission_value" placeholder="Enter Your Commission" style="width:50%;">
-                                <label for="remaining" class="block font-semibold mb-2">Total Remaining</label>
+                                <label for="remaining" class="block font-semibold mb-2">Total Remaining - المتبقي بعد خصم العموله</label>
                                 <input type="number" class="form-input border rounded px-3 transition-all duration-200 ease-in-out" id="remaining" name="remaining" style="width:50%;" readonly>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                         <!-- Any Transfer Section -->
                         <!-- Transfer Section -->
                         <div class="mb-4" style="display:flex; flex-direction:column; border-bottom:1px solid #ddd; padding:15px;">
-                            <label for="transfers" class="block font-semibold mb-2">Any Transfers...?</label>
+                            <label for="transfers" class="block font-semibold mb-2">Any Transfers...? التحويلات</label>
                             <div id="transfer_fields">
                                 <div class="flex items-center space-x-2 mb-2">
                                     <input type="text" class="form-input border rounded px-3" placeholder="Transfer Method" style="width:25%;" name="transfer_keys[]">
@@ -108,7 +108,7 @@
 
                         <!-- Any Expenses Section -->
                         <div class="mb-4" style="display:flex; flex-direction:column; border-bottom:1px solid #ddd; padding:15px;">
-                            <label for="expenses" class="block font-semibold mb-2">Any Expenses...?</label>
+                            <label for="expenses" class="block font-semibold mb-2">Any Expenses...? المصاريف</label>
                             <div id="expense_fields">
                                 <div class="flex items-center space-x-2 mb-2">
                                     <input type="text" class="form-input border rounded px-3" placeholder="Expense Name" style="width:45%;" name="expense_keys[]">

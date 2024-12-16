@@ -16,29 +16,29 @@
                     <div style="display: flex; flex-direction:row; justify-content:space-between; padding:40px;">
                         <div style="display: flex; flex-direction:column; justify-content:space-around;">
                             <div class="mb-4">
-                                <label for="reference_collection" class="block font-semibold mb-2">Reference Collection</label>
+                                <label for="reference_collection" class="block font-semibold mb-2">Reference Collection - عمليه التحصيل</label>
                                 <input type="number" class="form-input border rounded px-3" id="reference_collection" name="reference_collection" value="{{ $transaction->reference_collection }}">
                             </div>
                             <div class="mb-4">
-                                <label for="order_number" class="block font-semibold mb-2">Number Of Orders</label>
+                                <label for="order_number" class="block font-semibold mb-2">Number Of Orders - عدد الاوردرات</label>
                                 <input type="number" class="form-input border rounded px-3" id="order_number" name="order_number" value="{{ $transaction->order_number }}">
                             </div>
                             <div class="mb-4">
-                                <label for="order_delivered" class="block font-semibold mb-2">Orders Delivered</label>
+                                <label for="order_delivered" class="block font-semibold mb-2">Orders Delivered - تم التسليم</label>
                                 <input type="number" class="form-input border rounded px-3" id="order_delivered" name="order_delivered" value="{{ $transaction->order_delivered }}">
                             </div>
                         </div>
                         <div style="display: flex; flex-direction:column; justify-content:space-around;">
                             <div class="mb-4">
-                                <label for="total_cash" class="block font-semibold mb-2">Total Collection</label>
+                                <label for="total_cash" class="block font-semibold mb-2">Total Collection - اجمالي التحصيل</label>
                                 <input type="number" class="form-input border rounded px-3" id="total_cash" name="total_cash" value="{{ $transaction->total_remaining + $transaction->sales_commission }}">
                             </div>
                             <div class="mb-4">
-                                <label for="sales_commission" class="block font-semibold mb-2">Commission Value</label>
+                                <label for="sales_commission" class="block font-semibold mb-2">Commission Value - عمولة المندوب</label>
                                 <input type="number" class="form-input border rounded px-3" id="sales_commission" name="sales_commission" value="{{ $transaction->sales_commission }}">
                             </div>
                             <div class="mb-4">
-                                <label for="total_remaining" class="block font-semibold mb-2">Total Remaining</label>
+                                <label for="total_remaining" class="block font-semibold mb-2">Total Remaining - المتبقي بعد خصم العموله</label>
                                 <input type="number" class="form-input border rounded px-3" id="total_remaining" name="total_remaining" value="{{ $transaction->total_remaining }}" readonly>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
 
                     <!-- Transfers Section -->
                     <div class="mb-4" style="border-bottom:1px solid #ddd; padding:15px;">
-                        <label for="transfers" class="block font-semibold mb-2">Transfers</label>
+                        <label for="transfers" class="block font-semibold mb-2">Transfers - التحويلات</label>
                         <div id="transfer_fields">
                             @foreach($transaction->transfers as $transfer)
                                 <div class="flex items-center space-x-2 mb-4 transfer-row">
@@ -70,7 +70,7 @@
 
                     <!-- Expenses Section -->
                     <div class="mb-4" style="border-bottom:1px solid #ddd; padding:15px;">
-                        <label for="expenses" class="block font-semibold mb-2">Expenses</label>
+                        <label for="expenses" class="block font-semibold mb-2">Expenses - المصاريف</label>
                         <div id="expense_fields">
                             @foreach($transaction->expenses as $expense)
                                 <div class="flex items-center space-x-2 mb-2 expense-row">

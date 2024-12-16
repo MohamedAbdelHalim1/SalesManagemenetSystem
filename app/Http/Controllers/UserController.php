@@ -29,21 +29,26 @@ class UserController extends Controller
 
     public function storeSingle(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role_id' => 'required|integer|exists:roles,id',
-        ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
-        ]);
-
-        return redirect()->route('user.index')->with('success', 'User created successfully.');
+        try{
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'role_id' => 'required|integer|exists:roles,id',
+            ]);
+    
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id' => $request->role_id,
+            ]);
+    
+            return redirect()->route('user.index')->with('success', 'User created successfully.');
+        } catch (\Exception $e) {
+            dd($e);
+        }
+      
     }
 
     public function storeBulk(Request $request)
