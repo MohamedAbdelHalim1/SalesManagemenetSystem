@@ -55,16 +55,18 @@
                                         
                                         $totalCollection = $transaction->total_remaining + $transaction->sales_commission;
                                     @endphp
-                                    <tr>
-                                        <td>{{ $transaction->id }}</td>
-                                        <td>{{ $transaction->reference_collection }}</td>
-                                        <td>{{ $transaction->user->name }}</td>
-                                        <td>{{ $transaction->order_number }}</td>
-                                        <td>{{ $transaction->order_delivered }}</td>
-                                        <td>{{ $totalCollection ?? 0 }} LE</td>
-                                        <td>{{ $transaction->sales_commission ?? 0}} LE</td>
-                                        <td>{{ $transaction->total_remaining ?? 0}} LE</td>
-                                    </tr>
+                                    @if (!$transaction->user->role_id == 2)
+                                        <tr>
+                                            <td>{{ $transaction->id }}</td>
+                                            <td>{{ $transaction->reference_collection }}</td>
+                                            <td>{{ $transaction->user->name }}</td>
+                                            <td>{{ $transaction->order_number }}</td>
+                                            <td>{{ $transaction->order_delivered }}</td>
+                                            <td>{{ $totalCollection ?? 0 }} LE</td>
+                                            <td>{{ $transaction->sales_commission ?? 0}} LE</td>
+                                            <td>{{ $transaction->total_remaining ?? 0}} LE</td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                             <tfoot>
