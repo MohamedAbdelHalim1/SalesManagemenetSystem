@@ -47,7 +47,7 @@
                                 $total_expenses = 0;
                                 $total_cash = 0;
                                 foreach ($openClose->transactions as $transaction){
-                                    $total_cash += $transaction->total_cash;
+                                    $total_cash += $transaction->total_remaining;
                                     foreach ($transaction->transfers as $transfer){
                                         $total_transfer += $transfer->transfer_value;                               
                                     }
