@@ -78,6 +78,49 @@
                         </table>
                     </div>
 
+                    <!-- Transfers Section -->
+                    <div class="section-wrapper transfers-section">
+                        <div class="section-title">Sales Transfers</div>
+                        <table id="transfersTable">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Transfer Key</th>
+                                    <th>Transfer Image</th>
+                                    <th>Transfer Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $totalTransferValueSum = 0; @endphp
+                                @foreach($openClose->transactions as $transaction)
+                                    @foreach($transaction->transfers as $transfer)
+                                        @php $totalTransferValueSum += $transfer->transfer_value; @endphp
+                                        <tr>
+                                            <td>{{ $transaction->id }}</td>
+                                            <td>{{ $transfer->transfer_key }}</td>
+                                            <td>
+                                                @if($transfer->image)
+                                                    <a href="{{ asset($transfer->image) }}" target="_blank">
+                                                        <img src="{{ asset($transfer->image) }}" alt="Transfer Image" class="w-20 h-20 object-cover" />
+                                                    </a>
+                                                @else
+                                                    No image attached
+                                                @endif
+                                            </td>
+                                            <td>{{ $transfer->transfer_value }} LE</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right font-bold">Total Transfer Value:</td>
+                                    <td class="font-bold">{{ $totalTransferValueSum }} LE</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
                     <!-- General Expenses -->
                     <div class="section-wrapper">
                         <h4 class="section-title">General Expenses</h4>
