@@ -163,7 +163,12 @@ class ReportController extends Controller
         return view('reports.special', compact('transactions', 'accountants', 'sales'));
     }
     
-    
+    public function destroy($id)
+    {
+        $report = OpenClose::findOrFail($id); // Replace `OpenClose` with your model
+        $report->delete();
+        return response()->json(['message' => 'Report deleted successfully.']);
+    }
     
 
 

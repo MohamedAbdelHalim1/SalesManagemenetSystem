@@ -17,6 +17,7 @@
                                 <th class="py-2 px-4 border-b">Day Reference</th>
                                 <th class="py-2 px-4 border-b">Open Date</th>
                                 <th class="py-2 px-4 border-b">Close Date</th>
+                                <th class="py-2 px-4 border-b">Accountant</th>
                                 <th class="py-2 px-4 border-b">Transaction Count</th>
                                 <th class="py-2 px-4 border-b">Actions</th>
                                 <th class="py-2 px-4 border-b">All is Done</th>
@@ -28,6 +29,7 @@
                                     <td class="py-2 px-4 border-b text-center">{{ $record->id }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->open_at }}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->close_at ?? 'Open' }}</td>
+                                    <td class="py-2 px-4 border-b text-center">{{ $record->user->name}}</td>
                                     <td class="py-2 px-4 border-b text-center">{{ $record->transactions->count() }}</td>
                                     <td class="py-2 px-4 border-b text-center flex">
                                         <a href="{{ route('reports.show', $record->id) }}" class="btn-same-size" style="margin-right: 5px;">Show Details</a>

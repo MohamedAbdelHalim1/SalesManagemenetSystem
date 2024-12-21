@@ -76,6 +76,12 @@
                                             Reopen
                                         </button>
                                     @endif
+                                    @if(Auth::user()->role_id == 1)
+                                        <!-- Delete Button -->
+                                        <button onclick="confirmDelete({{ $openClose->id }})" class="btn-same-size bg-red-600 hover:bg-red-700" style="margin-left: 10px;">
+                                            Delete
+                                        </button>
+                                    @endif
                                 </td>                                
                             </tr>
                         @endforeach
@@ -185,4 +191,28 @@
 
 
     </script>
+
+<script>
+    function confirmDelete(id) {
+        if (confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
+            fetch(`/reports/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Report deleted successfully.');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Failed to delete the report.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+</script>
+
 </x-app-layout>

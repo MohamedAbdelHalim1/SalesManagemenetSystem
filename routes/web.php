@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/show/{id}', [ReportController::class, 'show'])->name('reports.show');
     Route::post('/reports/{id}/reopen', [ReportController::class, 'reopen'])->name('reports.reopen');
     Route::get('/reports/sales/{userId}', [ReportController::class, 'salesReport'])->name('reports.sales');
+    Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
 
     Route::get('/general-reports', [ReportController::class, 'general_report'])->name('general.report');
     Route::get('/general-report/transactions/{transaction}', [ReportController::class, 'general_transaction_show'])->name('general.transactions.show');
