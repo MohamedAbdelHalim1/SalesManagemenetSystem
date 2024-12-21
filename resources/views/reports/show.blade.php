@@ -98,6 +98,9 @@
                                 @foreach($openClose->transactions as $transaction)
                                     @foreach($transaction->transfers as $transfer)
                                         @php $totalTransferValueSum += $transfer->transfer_value; @endphp
+                                        @if ($transfer->transfer_key == Null && $transfer->transfer_value == Null) 
+                                            @continue
+                                        @endif
                                         <tr>
                                             <td>{{ $transaction->id }}</td>
                                             <td>{{ $transfer->transfer_key }}</td>
