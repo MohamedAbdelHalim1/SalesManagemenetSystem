@@ -81,7 +81,7 @@
                     <!-- Transfers Section -->
                     <div class="section-wrapper transfers-section">
                         <div class="section-title">Sales Transfers</div>
-                        <table id="transfersTable">
+                        <table id="transfersTable" class="styled-table">
                             <thead>
                                 <tr>
                                     <th>Transaction ID</th>
