@@ -274,9 +274,9 @@
                                     <td>{{ $totalCashSum }} LE</td>
                                     <td>{{ $totalCollectionSum }} LE</td>
                                     <td>{{ $totalCommissionSum }} LE</td>
-                                    <td>{{ $totalTransferValue }} LE</td>
-                                    <td>{{ $totalGeneralExpense }} LE</td>
-                                    <td>{{ $totalAccountantExpenses }} LE</td>
+                                    <td>{{ $totalTransferValueSum }} LE</td>
+                                    <td>{{ $totalGeneralExpenseSum }} LE</td>
+                                    <td>{{ $totalAccountantExpensesSum }} LE</td>
                                     <td>{{ $totalCoinsSum }} LE</td>
                                 </tr>
                             </tbody>
