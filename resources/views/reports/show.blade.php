@@ -55,7 +55,8 @@
                                         
                                         $totalCollection = $transaction->total_remaining + $transaction->sales_commission;
                                     @endphp
-                                    @if (!$transaction->user->role_id == 2)
+                                    @if ($transaction->user->role_id == 2)
+                                    @continue
                                         <tr>
                                             <td>{{ $transaction->id }}</td>
                                             <td>{{ $transaction->reference_collection }}</td>
