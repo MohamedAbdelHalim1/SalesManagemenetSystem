@@ -254,6 +254,35 @@
                             </tfoot>
                         </table>
                     </div>
+
+                    <div class="section-wrapper">
+                        <h4 class="section-title">All Totals Report</h4>
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>Total Cash</th>
+                                    <th>Total Collection</th>
+                                    <th>Total Commission</th>
+                                    <th>Total Transfer Value</th>
+                                    <th>Total General Expense</th>
+                                    <th>Total Accountant Expense</th>
+                                    <th>Total Coins</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ $totalCashSum }} LE</td>
+                                    <td>{{ $totalCollectionSum }} LE</td>
+                                    <td>{{ $totalCommissionSum }} LE</td>
+                                    <td>{{ $totalTransferValue }} LE</td>
+                                    <td>{{ $totalGeneralExpense }} LE</td>
+                                    <td>{{ $totalAccountantExpenses }} LE</td>
+                                    <td>{{ $totalCoinsSum }} LE</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>
