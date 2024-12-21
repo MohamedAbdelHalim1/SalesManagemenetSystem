@@ -141,6 +141,9 @@
                                 @endphp
                                 @foreach($generalExpenses as $expense)
                                     @php $totalGeneralExpenseSum += $expense->expenses_value; @endphp
+                                    @if ($expense->expenses_key == Null && $expense->expenses_value == Null)
+                                        @continue
+                                    @endif
                                     <tr>
                                         <td>{{ $expense->transaction_id }}</td>
                                         <td>{{ $expense->expenses_key }}</td>
