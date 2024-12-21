@@ -57,6 +57,7 @@
                                     @endphp
                                     @if ($transaction->user->role_id == 2)
                                     @continue
+                                    @endif
                                         <tr>
                                             <td>{{ $transaction->id }}</td>
                                             <td>{{ $transaction->reference_collection }}</td>
@@ -67,7 +68,6 @@
                                             <td>{{ $transaction->sales_commission ?? 0}} LE</td>
                                             <td>{{ $transaction->total_remaining ?? 0}} LE</td>
                                         </tr>
-                                    @endif
                                 @endforeach
                             </tbody>
                             <tfoot>
